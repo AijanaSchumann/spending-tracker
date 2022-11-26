@@ -1,5 +1,7 @@
+import { Picker } from '@react-native-picker/picker';
+import { PrivateValueStore } from '@react-navigation/native';
 import React, { FC, useState } from 'react';
-import { Button, Text, TextInput } from 'react-native';
+import { Button, Switch, Text, TextInput } from 'react-native';
 import { Screen } from 'react-native-screens';
 import { useDispatch, useSelector } from 'react-redux';
 import { Entry } from '../models/entry';
@@ -7,40 +9,82 @@ import { add } from '../store/slices/entrySlice';
 import { RootState } from '../store/store';
 
 
-const DataEntry : FC = () => {
+const DataEntry: FC = () => {
 
-    const [input, setInput] = useState("");
-    const [category, setCategory] = useState("");
-    const [note, setNote] = useState("");
+  const [input, setInput] = useState("");
+  const [categoryId, setCategory] = useState<number>();
+  const [note, setNote] = useState("");
+  const [isRecurring, setRecurring] = useState(false);
+  const [interval, setInterval] = useState("monthly");
+  const [error, showError] = useState(false);
 
-    const categories = useSelector((state: RootState) => state.categories.categories);
-    const entries = useSelector((state: RootState) => state.entries.entries);
+  const categories = useSelector((state: RootState) => state.categories.categories);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const saveEntry = () =>{
+  const reset = () => {
+    setInput("");
+    setNote("");
+    setRecurring(false);
+    setCategory(undefined);
+  }
 
-        //check if value and category are set
+  const saveEntry = () => {
 
-        const newEntry : Entry = {
-           note: note,
-           value: Number(input),
-           date: new Date().toUTCString(),
-           categoryId:1
-        };
+    if (input.length === 0 || !categoryId) {
+      showError(true);
+    } else {
 
-        dispatch(add(newEntry));
+      showError(false);
+      const newEntry: Entry = {
+        note: note,
+        value: Number(input),
+        date: new Date().toUTCString(),
+        categoryId: categoryId,
+        recurring: isRecurring,
+        interval: isRecurring ? interval : undefined
+      };
 
+      dispatch(add(newEntry));
+      reset();
     }
+  }
 
-    //TODO: get available categories from store
-     //get picker for category
-    //get picker for date/time (community packages?)
-    return (
+  return (
     <Screen>
-      <Text>Data entry test</Text>
-      <TextInput value={input} onChangeText={setInput} keyboardType="numeric"></TextInput>
-      <TextInput value={note} onChangeText={setNote} />
+      <TextInput placeholder='value spend' value={input} onChangeText={setInput} keyboardType="numeric"></TextInput>
+      {
+        error && input.length === 0 &&
+        <Text>Cannot be empty</Text>
+      }
+      <Text>Select category</Text>
+      <Picker selectedValue={categoryId} onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}>
+      <Picker.Item label="" value={undefined} />
+        {     
+          categories.map(category => {
+            return <Picker.Item label={category.title} value={category.id} />
+            }
+          )
+        }
+      </Picker>
+      {
+        error && !categoryId &&
+        <Text>Category must be selected</Text>
+      }
+
+      <Text>Reaccuring?</Text>
+      <Switch value={isRecurring} onValueChange={setRecurring} />
+      {
+        isRecurring &&
+        <Picker selectedValue={interval} onValueChange={(itemValue, itemIndex) => setInterval(itemValue)}>
+          <Picker.Item label="weekly" value={"weekly"} />
+          <Picker.Item label="monthly" value={"monthly"} />
+          <Picker.Item label="quarterly" value={"quarterly"} />
+          <Picker.Item label="yearly" value={"yearly"} />
+        </Picker>
+      }
+
+      <TextInput placeholder='add a note' multiline value={note} onChangeText={setNote} />
       <Button title='Save' onPress={saveEntry} />
     </Screen>)
 }

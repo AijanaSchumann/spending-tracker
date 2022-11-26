@@ -6,7 +6,12 @@ export interface CategoryState{
 }
 
 const initialState : CategoryState ={
-    categories: []
+    categories: [
+      {id: 1, title:"Food"}, 
+      {id:2, title: "Accomodation"}, 
+      {id: 3, title: "Medicine"},
+      {id: 4, title: "Fun stuff"}
+    ]
 }
 
 export const categorySlice = createSlice({

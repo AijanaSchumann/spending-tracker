@@ -4,4 +4,6 @@ export interface Entry {
   value: number,
   note: string,
   date: string,
+  recurring: boolean,
+  interval?: string
 }
