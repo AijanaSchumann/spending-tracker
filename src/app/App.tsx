@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import DataEntry from './views/DataEntry';
 import Home from './views/Home';
+import Overview from './views/Overview';
 
 const App = () => {
  
@@ -20,6 +21,7 @@ const App = () => {
       <Stack.Navigator initialRouteName='Home'>
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="AddEntry" component={DataEntry} />
+        <Stack.Screen name="Overview" component={Overview} />
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>
