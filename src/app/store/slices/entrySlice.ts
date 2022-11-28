@@ -17,11 +17,14 @@ export const entrySlice = createSlice({
   reducers:{
     add: (state, action: PayloadAction<Entry>) =>{
         state.entries = state.entries.concat(action.payload);
-    }
+    },
+    addAll: (state, action: PayloadAction<Entry[]>) =>{
+      state.entries = action.payload;
+  }
 
   }
 });
 
-export const {add} = entrySlice.actions;
+export const {add, addAll} = entrySlice.actions;
 
 export default entrySlice.reducer;

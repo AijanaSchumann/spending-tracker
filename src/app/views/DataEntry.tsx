@@ -5,6 +5,7 @@ import { Button, Switch, Text, TextInput } from 'react-native';
 import { Screen } from 'react-native-screens';
 import { useDispatch, useSelector } from 'react-redux';
 import { Entry } from '../models/entry';
+import databaseService from '../services/dbService';
 import { add } from '../store/slices/entrySlice';
 import { RootState } from '../store/store';
 
@@ -39,14 +40,18 @@ const DataEntry: FC = () => {
       const newEntry: Entry = {
         note: note,
         value: Number(input),
-        date: new Date().toUTCString(),
+        date: new Date().toISOString(),
         categoryId: categoryId,
         recurring: isRecurring,
         interval: isRecurring ? interval : undefined
       };
-
-      dispatch(add(newEntry));
-      reset();
+     
+      databaseService.saveEntry(newEntry).then(newId =>{
+        newEntry.id = newId;
+        dispatch(add(newEntry));
+        reset();
+      });
+      
     }
   }
 
