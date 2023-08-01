@@ -3,7 +3,6 @@ export interface Entry {
   categoryId: number,
   value: number,
   note: string,
-  date: string,
-  recurring: boolean,
+  date: number,
   interval?: string
 }
