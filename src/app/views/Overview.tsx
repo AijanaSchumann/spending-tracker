@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Entry} from '../models/entry';
 import {RootState} from '../store/store';
 import Filter from '../components/overview/filter/FilterContainer';
-import {Income} from '../models/income';
 import FAB from '../components/general/FAB';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import DataEntryModal from '../components/forms/DataEntryModal';
@@ -35,12 +34,12 @@ const styles = StyleSheet.create({
 });
 
 const Overview: FC = ({navigation}: any) => {
-  const entries = useSelector((state: RootState) => state.entries.entries);
+  const entries = useSelector((state: RootState) => state.spending.entries);
   const income = useSelector((state: RootState) => state.income.income);
-  const dispatch = useDispatch();
+
   const data = [...entries, ...income];
 
-  const [filteredData, setFilteredData] = React.useState<(Entry | Income)[]>([]);
+  const [filteredData, setFilteredData] = React.useState<(Entry)[]>([]);
   const [isDataEntryVisible, showDataEntry] = React.useState(false);
 
   const Spending = ({data}: {data: Entry}) => (
@@ -63,7 +62,7 @@ const Overview: FC = ({navigation}: any) => {
     </View>
   );
 
-  const Income = ({data}: {data: Income}) => (
+  const Income = ({data}: {data: Entry}) => (
     <View style={styles.mainContainer}>
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <View style={{flex: 1, flexDirection: 'column'}}>
@@ -86,10 +85,10 @@ const Overview: FC = ({navigation}: any) => {
             data={filteredData}
             renderItem={({item}) => {
               {
-                return (item as any).categoryId ? (
-                  <Spending key={'spending' + item.id} data={item as Entry} />
+                return item.type==="spending" ? (
+                  <Spending key={'spending' + item.id} data={item} />
                 ) : (
-                  <Income key={'income' + item.id} data={item as Income} />
+                  <Income key={'income' + item.id} data={item} />
                 );
               }
             }}
@@ -101,7 +100,8 @@ const Overview: FC = ({navigation}: any) => {
         )}
       </View>
 
-    
+      <FAB icon={faPlus} color="#189EEC" onPress={() => showDataEntry(true)} />
+      <DataEntryModal isVisible={isDataEntryVisible} onClose={() => showDataEntry(false)} />
     </SafeAreaView>
   );
 };

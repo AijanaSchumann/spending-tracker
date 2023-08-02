@@ -11,13 +11,12 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Entry} from '../../../models/entry';
-import {Income} from '../../../models/income';
 import FilterSelector from './FilterSelector';
 import {FilterTypes, getSupportedFilter} from '../../../models/filterTypes';
 
 type Props = {
-  data: (Entry | Income)[];
-  onFilterChanged(data: (Entry | Income)[]): void;
+  data: (Entry)[];
+  onFilterChanged(data: (Entry)[]): void;
 };
 
 const styles = StyleSheet.create({

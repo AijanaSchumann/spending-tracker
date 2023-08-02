@@ -3,65 +3,69 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Entry} from '../../models/entry';
 import databaseService from '../../services/dbService';
+import { Category } from '../../models/category';
+import { createInitialCategories, loadDataOnStartup } from '../actions/SetupAction';
 
 export interface EntryState {
   entries: Entry[];
+  categories: Category[];
   entryToUpdate: Entry | null;
 }
 
 const initialState: EntryState = {
   entries: [],
   entryToUpdate: null,
+  categories: []
 };
 
 export const entrySlice = createSlice({
-  name: 'entry',
+  name: 'spending',
   initialState,
   reducers: {
-    addAllExpenses: (state, action: PayloadAction<Entry[]>) => {
-      state.entries = action.payload;
-    },
-    editEntry: (state, action: PayloadAction<Entry>) => {
+    editSpending: (state, action: PayloadAction<Entry>) => {
       state.entryToUpdate = action.payload;
-    },
-    editEntryDone: (state, action: PayloadAction<Entry>) => {
-      const findIndex = state.entries.findIndex(
-        el => el.id == action.payload.id,
-      );
-      state.entries[findIndex] = action.payload;
-      state.entryToUpdate = null;
-    },
+    }
   },
   extraReducers(builder) {
-    builder.addCase(loadExpenses.fulfilled, (state, action) => {
-      state.entries = action.payload;
-    }),
-    builder.addCase(saveExpenses.fulfilled, (state, action) => {
+    builder.addCase(loadDataOnStartup.fulfilled, (state, action) =>{
+      const payload = action.payload;
+      state.entries = payload.data.expense || []
+      state.categories = payload.categories.expense;
+     }),
+     builder.addCase(createInitialCategories.fulfilled, (state, action)=>{
+      state.categories = action.payload.expense;
+     }),
+    builder.addCase(saveExpense.fulfilled, (state, action) => {
       state.entries = state.entries.concat(action.payload);
-    }
-    );
+    }),
+    builder.addCase(saveUpdatedExpense.fulfilled, (state, action)=>{
+      const data = action.payload;
+      state.entryToUpdate=null;
+      state.entries = state.entries.map(el =>
+        el.id === data.id ? data : el
+      );
+    })
   },
 });
 
-export const loadExpenses= createAsyncThunk(
-  'income/loadExpenses',
-  async thunkAPI => {
-    const result = await databaseService.loadEntries();
-    return result;
-  },
-);
-
-export const saveExpenses = createAsyncThunk(
-  'income/saveExpenses',
+export const saveExpense = createAsyncThunk(
+  'spending/saveExpense',
   async (data: Entry, thunkAPI) => {
     const result = await databaseService.saveEntry(data);
     data.id = result;
-    
     return data;
   },
 );
 
-export const {addAllExpenses, editEntry, editEntryDone} =
+export const saveUpdatedExpense = createAsyncThunk(
+  'spending/updateExpense',
+  async (data: Entry, thunkAPI) => {
+    const result = await databaseService.saveEntry(data);
+    return data;
+  },
+);
+
+export const { editSpending: editEntry} =
   entrySlice.actions;
 
 export default entrySlice.reducer;

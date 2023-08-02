@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { Entry } from "../../../models/entry";
-import { Income } from "../../../models/income";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faSortAsc, faSortDesc } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
@@ -10,9 +9,9 @@ const styles = StyleSheet.create({
 });
 
 type Props = {
-    data: (Entry | Income)[];
+    data: (Entry )[];
     isAscending?: boolean
-    onFilterChanged(data: (Entry | Income)[]): void;
+    onFilterChanged(data: (Entry )[]): void;
     type: "date" | "value"
 }
 

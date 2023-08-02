@@ -1,5 +1,4 @@
 import { Entry } from "./entry";
-import { Income } from "./income";
 
 
 //TODO: add category one day
@@ -30,5 +29,5 @@ export const getSupportedFilter = (filter: FilterTypes) =>{
 
 export type FilterConfig = {
   content: JSX.Element;
-  filteredData?: () => (Entry | Income)[];
+  filteredData?: () => (Entry)[];
 };

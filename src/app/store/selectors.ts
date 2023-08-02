@@ -2,7 +2,7 @@ import {createSelector} from '@reduxjs/toolkit';
 import {RootState} from './store';
 
 export const selectMonthlySpend = createSelector(
-  (state: RootState) => state.entries.entries,
+  (state: RootState) => state.spending.entries,
   entries => {
     const currentMonth = new Date().getMonth();
     const filtered = entries.filter(

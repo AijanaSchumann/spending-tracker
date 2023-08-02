@@ -4,11 +4,10 @@ import React from 'react';
 import {useState} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Entry} from '../../../models/entry';
-import {Income} from '../../../models/income';
 
 type Props = {
-  data: (Entry | Income)[];
-  onFilterChanged(data: (Entry | Income)[]): void;
+  data: (Entry )[];
+  onFilterChanged(data: (Entry )[]): void;
   isDay?: boolean;
 };
 

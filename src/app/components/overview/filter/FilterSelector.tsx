@@ -1,6 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Entry} from '../../../models/entry';
-import {Income} from '../../../models/income';
 import MonthOrDayFilter from './MonthOrDayFilter';
 import {useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -9,8 +8,8 @@ import { faRepeat, faSortAsc, faSortDesc } from '@fortawesome/free-solid-svg-ico
 import AscendingDescendingFilter from './AscendingDescendingFilter';
 
 type Props = {
-  data: (Entry | Income)[];
-  onFilterChanged(data: (Entry | Income)[]): void;
+  data: (Entry )[];
+  onFilterChanged(data: (Entry)[]): void;
   activeFilter: SupportedFilters;
   onActiveFilterChange: (data:FilterTypes)=> void
 };
@@ -43,7 +42,7 @@ const FilterSelector = (props: Props) => {
 },[props.data]);*/
 
   const incomeFilter = () => {
-    const data = props.data.filter((el: any) => !el.categoryId);
+    const data = props.data.filter((el) => el.type === "income");
     return data;
   };
 
@@ -60,7 +59,7 @@ const FilterSelector = (props: Props) => {
 
   const reacurringFilter = () => {
     return props.data.filter(
-      (el: Entry | Income) => el.interval && el.interval?.length > 0,
+      (el: Entry) => el.interval && el.interval?.length > 0,
     );
   };
 
