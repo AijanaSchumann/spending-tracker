@@ -14,6 +14,8 @@ import { Text } from 'react-native';
 import Settings from './views/Settings';
 import { Dispatcher } from './store/store';
 import { createInitialCategories, loadDataOnStartup } from './store/actions/SetupAction';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faGear, faHome, faList } from '@fortawesome/free-solid-svg-icons';
 
 
 const App = () => {
@@ -46,9 +48,9 @@ useEffect(()=>{
 const MainTabs = () =>{
 
   return <Tab.Navigator>
-    <Tab.Screen name="Home_Tab" options={{title:"Home"}} component={Home} />
-    <Tab.Screen name="Spendings" component={Overview} />
-    <Tab.Screen name="Settings" component={Settings} />
+    <Tab.Screen  name="Home_Tab" component={Home} options={{title:"Home", tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faHome} />)}}  />
+    <Tab.Screen name="Spendings" component={Overview} options={{tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faList} />)}}  />
+    <Tab.Screen name="Settings" component={Settings} options={{ tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faGear} />)}} />
   </Tab.Navigator>
 }
   
