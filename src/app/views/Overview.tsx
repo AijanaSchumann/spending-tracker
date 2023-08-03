@@ -85,7 +85,7 @@ const Overview: FC = ({navigation}: any) => {
             data={filteredData}
             renderItem={({item}) => {
               {
-                return item.type==="spending" ? (
+                return item.type==="expense" ? (
                   <Spending key={'spending' + item.id} data={item} />
                 ) : (
                   <Income key={'income' + item.id} data={item} />
