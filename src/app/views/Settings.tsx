@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { View } from 'react-native';
+import SettingsList from '../components/settings/SettingsList';
 
 const Settings = () => {
 
@@ -11,7 +12,11 @@ const Settings = () => {
     //change expense / income adding -> close on save.
 
 
-    return <Text>Settings!</Text>
+    return (
+    <View style={{padding:10}}>
+        <SettingsList />
+    </View>
+    )
 }
 
 export default Settings;
