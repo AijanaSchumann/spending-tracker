@@ -10,6 +10,9 @@ import {
   View,
 } from 'react-native';
 import {Currency, currencyList} from '../../constants/currencyList';
+import {useDispatch, useSelector} from 'react-redux';
+import {Dispatcher, RootState} from '../../store/store';
+import {saveSetting} from '../../store/slices/settingsSlice';
 
 const styles = StyleSheet.create({
   label: {
@@ -42,8 +45,12 @@ const styles = StyleSheet.create({
 
 const CurrencyList = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCurrency, setSelectedCurreny] = useState('Euro');
   const [currencies, setCurrencyList] = useState(currencyList);
+
+  const selectedCurrency = useSelector(
+    (state: RootState) => state.settings.currency,
+  );
+  const dispatcher = useDispatch<Dispatcher>();
 
   useEffect(() => {
     const searchResult = currencyList.filter(
@@ -96,10 +103,15 @@ const CurrencyList = () => {
         data={currencies}
         renderItem={({item}) => {
           {
-            return item.name === selectedCurrency ? (
+            return item.name === selectedCurrency.name ? (
               <SelectedCurrency {...item} />
             ) : (
-              <Pressable onPress={() => setSelectedCurreny(item.name)}>
+              <Pressable
+                onPress={() =>
+                  dispatcher(
+                    saveSetting({settingsName: 'currency', value: item}),
+                  )
+                }>
                 <CurrencyItem data={item} showBorder />
               </Pressable>
             );

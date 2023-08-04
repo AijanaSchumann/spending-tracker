@@ -3,6 +3,8 @@ import { Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import CurrencyList from './CurrencyList';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -21,34 +23,43 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   settingsListItem:{
-    //borderBottomWidth:1,
-    borderBottomColor: 'black'
+    borderBottomWidth:1,
+    borderBottomColor: '#abb0ab',
+    display:"flex",
+    flexDirection: "row",
+    alignItems:"center",
+    justifyContent:"space-between"
   },
   settingsTitle: {
     fontSize: 20,
     marginTop:5,
     marginBottom:5
-  }
+  },
 });
 
 const SettingsList = () => {
+
+  const settings = useSelector((state: RootState)=> state.settings);  
+
   const [isModalVisible, setshowModal] = useState(false);
   const [setting, setSetting] = useState<JSX.Element | null>(null);
   const [modalTitle, setTitle] = useState('');
 
-  const settingsList = [{title: 'Currency', element: <CurrencyList />}];
+  const settingsList = [{title: 'Currency', element: <CurrencyList />, selected: `(${settings.currency.name})`}];
 
   return (
     <View>
       {settingsList.map(el => (
-        
-        <Pressable style={styles.settingsListItem}
+        <Pressable 
           onPress={() => {
             setshowModal(true);
             setSetting(el.element);
             setTitle(el.title);
           }}>
-          <Text style={styles.settingsTitle}>{el.title}</Text>
+            <View style={styles.settingsListItem}>
+              <Text style={styles.settingsTitle}>{el.title}</Text>
+              <Text style={{alignSelf:"center"}}>{el.selected}</Text>
+          </View>
         </Pressable>
       ))}
 

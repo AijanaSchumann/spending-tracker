@@ -1,6 +1,8 @@
 import React, {FC} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {PieChart} from 'react-native-gifted-charts';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +22,8 @@ type Props = {
 const ExpenseRatio: FC<Props> = (props: Props) => {
   const incomeColor = '#07964F';
   const expenseColor = '#EF0808';
+
+  const currency = useSelector((state: RootState)=> state.settings.currency).symbol;
 
   const expensePercent = (props.expenses / props.income) * 100 || 0;
 
@@ -55,7 +59,7 @@ const ExpenseRatio: FC<Props> = (props: Props) => {
                 styles.text,
                 {textShadowColor: incomeColor},
               ]}>{`Income: `}</Text>
-            <Text style={styles.text}>{`${props.income} $`}</Text>
+            <Text style={styles.text}>{`${props.income} ${currency}`}</Text>
           </View>
 
           <Text style={{marginRight: 10, marginLeft: 10}}>{'|'}</Text>
@@ -65,7 +69,7 @@ const ExpenseRatio: FC<Props> = (props: Props) => {
                 styles.text,
                 {textShadowColor: expenseColor},
               ]}>{`Expenses: `}</Text>
-            <Text style={styles.text}>{`${props.expenses} $`}</Text>
+            <Text style={styles.text}>{`${props.expenses} ${currency}`}</Text>
           </View>
         </View>
       </View>

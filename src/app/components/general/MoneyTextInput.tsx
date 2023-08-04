@@ -1,5 +1,7 @@
 import React, {FC} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +36,9 @@ type Props = {
 };
 
 const MoneyTextInput: FC<Props> = (props: Props) => {
+
+    const currency = useSelector((state: RootState)=> state.settings.currency).symbol;
+
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row'}}>
@@ -43,7 +48,7 @@ const MoneyTextInput: FC<Props> = (props: Props) => {
           placeholder="0.00"
           keyboardType="numeric"
           onChangeText={props.onChangeText}></TextInput>
-        <Text style={[styles.text, styles.adornment]}>€</Text>
+        <Text style={[styles.text, styles.adornment]}>{currency}</Text>
       </View>
 
       <View>

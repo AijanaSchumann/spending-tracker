@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
 const Overview: FC = ({navigation}: any) => {
   const entries = useSelector((state: RootState) => state.spending.entries);
   const income = useSelector((state: RootState) => state.income.income);
+  const currency = useSelector((state: RootState)=> state.settings.currency).symbol;
 
   const data = [...entries, ...income];
 
@@ -56,7 +57,7 @@ const Overview: FC = ({navigation}: any) => {
           )}
         </View>
         <Text style={[styles.valueText, styles.spending]}>
-          - {data.value} €
+          - {data.value} {currency}
         </Text>
       </View>
     </View>
@@ -69,7 +70,7 @@ const Overview: FC = ({navigation}: any) => {
           <Text style={styles.text}>Income</Text>
           <Text style={styles.text}>{new Date(data.date).toDateString()}</Text>
         </View>
-        <Text style={[styles.valueText, styles.income]}>+ {data.value} €</Text>
+        <Text style={[styles.valueText, styles.income]}>+ {data.value} {currency}</Text>
       </View>
     </View>
   );
