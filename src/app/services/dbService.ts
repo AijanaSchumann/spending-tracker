@@ -8,13 +8,13 @@ import defaultDataService from './defaultDataService';
 import { Category } from '../models/category';
 import { Setting } from '../models/settings';
 
-class DbService {
+export class DbService {
   db: SQLiteDatabase | null = null;
   readonly entryTableName = 'entries';
   readonly settingsTableName = 'settings';
   readonly categoriesTableName = 'categories';
 
-  openDbConnection = async () => {
+  async openDbConnection(){
     const db = await openDatabase({
       name: 'spendings-data.db',
       location: 'default',
@@ -33,24 +33,24 @@ class DbService {
     return db !== null;
   };
 
-  createBaseTables = async () => {
+  async createBaseTables(){
     await this.createEntryTable();
     await this.createSettingsTable();
     await this.createCategoryTable();
   };
 
-  loadEntries = async () => {
+  async loadEntries(){
 
     const result = await this.loadAll<Entry>(this.entryTableName);
     return result;
   };
 
-  loadCategories = async () =>{
+  async loadCategories(){
     const result = await this.loadAll<Category>(this.categoriesTableName);
     return result;
   }
 
-  loadSettings = async () =>{
+  async loadSettings(){
     const result = await this.loadAll<Setting>(this.settingsTableName);
 
     const flat = result.reduce((acc : {[index: string]: any}, curr: Setting)=>{
@@ -61,19 +61,19 @@ class DbService {
     return flat;
   }
 
-  saveSetting = async(name: string, value: any) =>{
+  async saveSetting(name: string, value: any){
 
     const sql = `INSERT OR REPLACE INTO '${this.settingsTableName}' (key, data) values (?,?)`;
     const result = await this.db?.executeSql(sql,[name, JSON.stringify(value)]);
     return result ? result[0].rowsAffected != 0 : false;
   }
 
-  loadIncome = async () =>{
+  async loadIncome(){
     const result = await this.loadAll<Entry>(this.entryTableName, `WHERE type ='income';`);
     return result;
   }
 
-  private loadAll = async <T,>(tableName: string, filter?: string) =>{
+  private async loadAll<T,>(tableName: string, filter?: string){
 
     let entries : T[] = [];
     const filterSQL = filter || '';
@@ -94,7 +94,7 @@ class DbService {
     return entries;
   }
 
-  saveEntry = async (data: Entry) => {
+  async saveEntry(data: Entry){
 
     try {
       const interval = data.interval ? "'"+data.interval+"'" : null;
@@ -112,12 +112,12 @@ class DbService {
     return undefined;
   };
 
-  saveIncome = async (data: Entry) => {
+  async saveIncome(data: Entry){
     const result = await this.saveEntry(data);
     return result;
   };
 
-  updateEntry = async (data: Entry) => {
+  async updateEntry(data: Entry){
    
     try {
       const sql =
@@ -133,7 +133,7 @@ class DbService {
     return undefined;
   };
 
-  deleteEntry = (entry: Entry) => {
+  async deleteEntry(entry: Entry){
 
     const sql = `DELETE FROM '${this.entryTableName}' WHERE id = ${entry.id};`;
     try {
@@ -144,7 +144,7 @@ class DbService {
     }
   };
 
-  saveAllIncome = async (data: Entry[]) =>{
+  async saveAllIncome(data: Entry[]){
 
     try {
     let sql =
@@ -166,7 +166,7 @@ class DbService {
     return false;
   }
 
-  private createEntryTable = async () => {
+  private async createEntryTable(){
     const sql2 = `CREATE TABLE IF NOT EXISTS '${this.entryTableName}' 
            (id INTEGER PRIMARY KEY AUTOINCREMENT,
             parentId INTEGER,
@@ -179,14 +179,14 @@ class DbService {
             await this.db?.executeSql(sql2);
   };
 
-  private createSettingsTable = async () => {
+  private async createSettingsTable(){
     const sql = `CREATE TABLE IF NOT EXISTS '${this.settingsTableName}' 
            (key TEXT NOT NULL PRIMARY KEY,
             data TEXT NOT NULL);`;
     await this.db?.executeSql(sql);
   };
 
-  private createCategoryTable = async () =>{
+  private async createCategoryTable(){
 
     const sql = `CREATE TABLE IF NOT EXISTS '${this.categoriesTableName}' 
     (id INTEGER PRIMARY KEY AUTOINCREMENT,

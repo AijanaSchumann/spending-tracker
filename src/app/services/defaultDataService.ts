@@ -15,7 +15,7 @@ class DefaultDataService{
         this.db = db;
     }
 
-    createDefaultCategories = async () =>{
+    async createDefaultCategories(){
         const categories : Category[]=[
             {id:1, title:"Gorceries", type:"expense"},
             {id:2, title:"Rent", type:"expense"},
@@ -46,7 +46,7 @@ class DefaultDataService{
 
     }
 
-    isAppFirstLaunched = async () =>{
+    async isAppFirstLaunched(){
 
         if(this.isAppFirstRun === null){
             const result = await this.db?.executeSql(this.sql);
@@ -65,7 +65,7 @@ class DefaultDataService{
         return this.isAppFirstRun;
     }
 
-    saveAppSetupDone = () =>{
+    async saveAppSetupDone(){
 
         this.db?.executeSql(this.updateSql, [this.appFirstLaunchKey, "false"]).then(e=> console.log(e)).catch(err=> console.error(err));
     }
