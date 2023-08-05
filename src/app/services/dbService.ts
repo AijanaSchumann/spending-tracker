@@ -6,6 +6,7 @@ import {
 import {Entry} from '../models/entry';
 import defaultDataService from './defaultDataService';
 import { Category } from '../models/category';
+import { Setting } from '../models/settings';
 
 class DbService {
   db: SQLiteDatabase | null = null;
@@ -47,6 +48,24 @@ class DbService {
   loadCategories = async () =>{
     const result = await this.loadAll<Category>(this.categoriesTableName);
     return result;
+  }
+
+  loadSettings = async () =>{
+    const result = await this.loadAll<Setting>(this.settingsTableName);
+
+    const flat = result.reduce((acc : {[index: string]: any}, curr: Setting)=>{
+      acc[curr.key] = JSON.parse(curr.data);
+      return acc;
+    },{} as {[index: string]: any});
+    
+    return flat;
+  }
+
+  saveSetting = async(name: string, value: any) =>{
+
+    const sql = `INSERT OR REPLACE INTO '${this.settingsTableName}' (key, data) values (?,?)`;
+    const result = await this.db?.executeSql(sql,[name, JSON.stringify(value)]);
+    return result ? result[0].rowsAffected != 0 : false;
   }
 
   loadIncome = async () =>{
@@ -162,8 +181,7 @@ class DbService {
 
   private createSettingsTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS '${this.settingsTableName}' 
-           (id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key TEXT NOT NULL,
+           (key TEXT NOT NULL PRIMARY KEY,
             data TEXT NOT NULL);`;
     await this.db?.executeSql(sql);
   };

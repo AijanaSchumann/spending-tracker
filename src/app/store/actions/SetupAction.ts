@@ -16,8 +16,9 @@ export const loadDataOnStartup = createAsyncThunk('startup/loadData', async (thu
 
     const entries = await databaseService.loadEntries();
     const categories = await databaseService.loadCategories();
+    const settings = await databaseService.loadSettings();
     const groupedCategories = groupBy(categories, i => i.type);
     const groupedEntries = groupBy(entries, i => i.type);
-    return {categories: groupedCategories, data: groupedEntries}
+    return {categories: groupedCategories, data: groupedEntries, settings: settings};
 
 });

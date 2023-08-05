@@ -20,9 +20,12 @@ export const settingsSlice = createSlice({
   },
   extraReducers(builder){
    builder.addCase(loadDataOnStartup.fulfilled, (state, action) =>{
-    const payload = action.payload;
-    //TODO: add
-   
+    const payload = action.payload.settings;
+
+    for(const prop in state){
+        if(payload[prop])
+           state[(prop as SupportedSettings)] = payload[prop];
+    }
    }),
    builder.addCase(saveSetting.fulfilled, (state, action)=>{
     const payload = action.payload;
@@ -35,8 +38,8 @@ export const settingsSlice = createSlice({
 
 export const saveSetting = createAsyncThunk("settings/saveSetting", async (data: SaveSetting, thunkAPI)=>{
   
-    //TODO: save to db
-    return { settingsName: data.settingsName, value: data.value }
+    databaseService.saveSetting(data.settingsName, data.value);
+    return { settingsName: data.settingsName, value: data.value };
 
 });
 
