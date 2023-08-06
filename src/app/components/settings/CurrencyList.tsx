@@ -13,6 +13,7 @@ import {Currency, currencyList} from '../../constants/currencyList';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatcher, RootState} from '../../store/store';
 import {saveSetting} from '../../store/slices/settingsSlice';
+import SearchBar from '../general/SearchBar';
 
 const styles = StyleSheet.create({
   label: {
@@ -90,15 +91,8 @@ const CurrencyList = () => {
 
   return (
     <View style={{padding: 5, marginTop: 10}}>
-      <View style={styles.searchContainer}>
-        <FontAwesomeIcon size={20} icon={faSearch} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={searchTerm}
-          onChangeText={setSearchTerm}
-        />
-      </View>
+      <SearchBar value={searchTerm}
+          onValueChange={setSearchTerm} /> 
       <FlatList
         data={currencies}
         renderItem={({item}) => {
