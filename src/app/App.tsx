@@ -16,6 +16,7 @@ import { Dispatcher } from './store/store';
 import { createInitialCategories, loadDataOnStartup } from './store/actions/SetupAction';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGear, faHome, faList } from '@fortawesome/free-solid-svg-icons';
+import { setupCategoryIcons } from './constants/iconSetup';
 
 
 const App = () => {
@@ -37,6 +38,7 @@ useEffect(()=>{
           setInitialScreen("Setup");
       }else{
         await dispatch(loadDataOnStartup());
+        setupCategoryIcons();
         setInitialScreen("Home");
       }
     });
