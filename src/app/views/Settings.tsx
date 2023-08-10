@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import SettingsList from '../components/settings/SettingsList';
 
 const Settings = () => {
@@ -13,9 +13,9 @@ const Settings = () => {
 
 
     return (
-    <View style={{padding:10}}>
+    <SafeAreaView style={{padding:10}}>
         <SettingsList />
-    </View>
+    </SafeAreaView>
     )
 }
 

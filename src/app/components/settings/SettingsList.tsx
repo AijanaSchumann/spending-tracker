@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import CategoryList from './CategoryList';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -37,6 +38,8 @@ const styles = StyleSheet.create({
   },
 });
 
+type AvailableSettings = { title: string, element: JSX.Element, selected: string}
+
 const SettingsList = () => {
 
   const settings = useSelector((state: RootState)=> state.settings);  
@@ -45,7 +48,10 @@ const SettingsList = () => {
   const [setting, setSetting] = useState<JSX.Element | null>(null);
   const [modalTitle, setTitle] = useState('');
 
-  const settingsList = [{title: 'Currency', element: <CurrencyList />, selected: `(${settings.currency.name})`}];
+  const settingsList : AvailableSettings[] = 
+    [   {title: 'Categories', element: <CategoryList />, selected:''},
+        {title: 'Currency', element: <CurrencyList />, selected: `(${settings.currency.name})`},                 
+    ];
 
   return (
     <View>
