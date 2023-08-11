@@ -7,12 +7,12 @@ import React from 'react';
 import App from './src/app/App';
 import {name as appName} from './app.json';
 import { Provider } from 'react-redux';
-import { store } from './src/app/store/store';
+import { setupStore } from './src/app/store/store';
 
 const ReduxConnector = () =>{
 
     return(
-        <Provider store={store} >
+        <Provider store={setupStore()} >
             <App />
         </Provider>
     )
