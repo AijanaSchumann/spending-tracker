@@ -82,11 +82,13 @@ export default IconPicker;
 
 
 const icons = [
-    'house','utensils','wifi','cart-shopping','car','bicycle','train','plane','plane-departure',
-    'gas-pump','credit-card','umbrella-beach','camera-retro','shirt','hat-wizard','graduation-cap',
-    'gift','burger','fish','pizza-slice', 'seedling','ice-cream','umbrella','dog','cat','hippo',
+    'house','utensils','wifi','cart-shopping','car','bicycle','train','plane-departure','plane','plane-arrival',
+    'gas-pump','credit-card','dollar-sign','money-bill-1-wave', 'coins', 'sack-dollar', 'wallet', 'file-invoice-dollar', 
+    'umbrella-beach','mountain-sun','camera-retro','shirt','hat-wizard','graduation-cap',
+    'gift','gifts','burger','fish','pizza-slice', 'seedling','ice-cream','umbrella','dog','cat','hippo',
     'otter','paw','book','heart','heart-pulse','tree','cake-candles','martini-glass','wine-glass',
     'person-snowboarding','person-hiking','dumbbell','hand-holding-medical', 'suitcase-medical',
     'bath','shower','soap','briefcase','gamepad','tv', 'mobile-screen','phone','laptop',
-    'snowflake','hammer','wrench','smoking',
+    'snowflake','hammer','wrench','smoking', 'arrow-trend-up', 'arrow-trend-down', 'building-columns',
+    'baby', 'baby-carriage'
   ];
