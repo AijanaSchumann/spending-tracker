@@ -5,18 +5,22 @@ import { Currency, currencyList } from "../../constants/currencyList";
 import { SaveSetting, SupportedSettings } from "../../models/settings";
 
 export interface SettingsState {
+    appFirstRun: boolean | null,
     currency: Currency
 }
 
 const initialState: SettingsState = {
-    currency: currencyList[0]
+    currency: currencyList[0],
+    appFirstRun: null
 }
 
 export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers:{
-
+    setAppFirstRun: (state, action: PayloadAction<boolean>) =>{
+        state.appFirstRun = action.payload;
+    }
   },
   extraReducers(builder){
    builder.addCase(loadDataOnStartup.fulfilled, (state, action) =>{
@@ -40,7 +44,15 @@ export const saveSetting = createAsyncThunk("settings/saveSetting", async (data:
   
     databaseService.saveSetting(data.settingsName, data.value);
     return { settingsName: data.settingsName, value: data.value };
-
 });
+
+export const updateSetting = createAsyncThunk("settings/updateSetting", async (data: SaveSetting, thunkAPI)=>{
+  
+    databaseService.saveSetting(data.settingsName, data.value);
+    return { settingsName: data.settingsName, value: data.value };
+});
+
+export const { setAppFirstRun } = settingsSlice.actions;
+
 
 export default settingsSlice.reducer;

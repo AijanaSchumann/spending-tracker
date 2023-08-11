@@ -9,7 +9,6 @@ class DefaultDataService{
     sql = `SELECT * FROM '${this.settingsTableName}' WHERE key = '${this.appFirstLaunchKey}'; `;
     updateSql = `INSERT INTO '${this.settingsTableName}' (key, data) values (?,?);`;
     db: SQLiteDatabase | null = null;
-    private isAppFirstRun: boolean | null = null;
 
     setup(db: SQLiteDatabase){
         this.db = db;
@@ -46,23 +45,17 @@ class DefaultDataService{
 
     }
 
-    async isAppFirstLaunched(){
+    async isAppFirstLaunched(): Promise<boolean>{
 
-        if(this.isAppFirstRun === null){
             const result = await this.db?.executeSql(this.sql);
             console.log(result);
             const row = result?.[0].rows;
             if(result && row && row.length>0){
                 const value = row.item(0).data;
-                this.isAppFirstRun = JSON.parse(value);
+               return JSON.parse(value);
             }else{
-                this.isAppFirstRun = true;
+                return true;
             }
-            
-           
-        }
-
-        return this.isAppFirstRun;
     }
 
     async saveAppSetupDone(){
