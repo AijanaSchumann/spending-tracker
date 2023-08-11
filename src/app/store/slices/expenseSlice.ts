@@ -5,6 +5,7 @@ import {Entry} from '../../models/entry';
 import databaseService from '../../services/dbService';
 import { Category } from '../../models/category';
 import { createInitialCategories, loadDataOnStartup } from '../actions/SetupAction';
+import { saveCategory } from '../actions/SettingsActions';
 
 export interface EntryState {
   entries: Entry[];
@@ -44,6 +45,12 @@ export const entrySlice = createSlice({
       state.entries = state.entries.map(el =>
         el.id === data.id ? data : el
       );
+    }),
+    builder.addCase(saveCategory.fulfilled, (state, action)=>{
+      const data = action.payload;
+      if(data?.type === "expense"){
+        state.categories = state.categories.concat(data);
+      }
     })
   },
 });

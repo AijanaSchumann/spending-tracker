@@ -1,7 +1,11 @@
 
 export interface Category{
-    id: number,
+    id?: number,
     title: string,
     note?: string,
-    type: "expense" | "income"
+    type: "expense" | "income",
+    icon: string | null,
+    color: string | null,
+    background: string | null
+
 }

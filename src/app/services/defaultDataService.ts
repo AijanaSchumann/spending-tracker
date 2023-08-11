@@ -17,13 +17,13 @@ class DefaultDataService{
 
     async createDefaultCategories(){
         const categories : Category[]=[
-            {id:1, title:"Gorceries", type:"expense"},
-            {id:2, title:"Rent", type:"expense"},
-            {id:3, title:"Medical", type:"expense"},
-            {id:4, title:"Gym", type:"expense"},
-            {id:5, title:"Fun", type:"expense"},
-            {id:6, title:"Salary", type:"income"},
-            {id:7, title:"Gift", type:"income"}
+            {id:1, title:"Gorceries", type:"expense", icon: null, color: null, background: null},
+            {id:2, title:"Rent", type:"expense", icon: null, color: null, background: null},
+            {id:3, title:"Medical", type:"expense", icon: null, color: null, background: null},
+            {id:4, title:"Gym", type:"expense", icon: null, color: null, background: null},
+            {id:5, title:"Fun", type:"expense", icon: null, color: null, background: null},
+            {id:6, title:"Salary", type:"income", icon: null, color: null, background: null},
+            {id:7, title:"Gift", type:"income", icon: null, color: null, background: null}
         ];
 
         let sql = `INSERT OR REPLACE INTO '${this.categoriesTableName}' (id, title, note, type) values `;

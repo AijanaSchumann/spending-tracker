@@ -5,6 +5,7 @@ import databaseService from "../../services/dbService";
 import { Entry } from "../../models/entry";
 import { Category } from "../../models/category";
 import { createInitialCategories, loadDataOnStartup } from "../actions/SetupAction";
+import { saveCategory } from "../actions/SettingsActions";
 
 export interface IncomeState {
     income: Entry[],
@@ -48,7 +49,13 @@ export const incomeSlice = createSlice({
    }),
    builder.addCase(saveAllIncome.fulfilled,(state, action)=>{
     state.income = action.payload
-   })
+   }),
+    builder.addCase(saveCategory.fulfilled, (state, action)=>{
+      const data = action.payload;
+      if(data?.type === "income"){
+        state.categories = state.categories.concat(data);
+      }
+    })
   }
 });
 

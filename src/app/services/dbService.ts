@@ -166,6 +166,25 @@ export class DbService {
     return false;
   }
 
+  async saveCategory(category: Category){
+
+    const sql =`INSERT INTO '${this.categoriesTableName}' (title, type, note, icon, color, background) 
+    values (?,?,?,?,?,?)`;
+
+    try{
+      const result = await this.db?.executeSql(sql, [category.title, category.type, category.note, category.icon, category.color, category.background]);
+      return result?.[0].insertId;
+    }catch(err){
+      console.error(err);
+    }
+
+    return undefined;
+  }
+
+  async updateCategory(updatedCategory: Category){
+
+  }
+
   private async createEntryTable(){
     const sql2 = `CREATE TABLE IF NOT EXISTS '${this.entryTableName}' 
            (id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -191,8 +210,12 @@ export class DbService {
     const sql = `CREATE TABLE IF NOT EXISTS '${this.categoriesTableName}' 
     (id INTEGER PRIMARY KEY AUTOINCREMENT,
      title TEXT NOT NULL,
+     type TEXT NOT NULL,
      note TEXT,
-     type TEXT NOT NULL);`;
+     icon TEXT,
+     color TEXT,
+     background TEXT
+     );`;
      await this.db?.executeSql(sql);
   }
 }
