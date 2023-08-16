@@ -137,11 +137,15 @@ export class DbService {
 
     const sql = `DELETE FROM '${this.entryTableName}' WHERE id = ${entry.id};`;
     try {
-      this.db?.executeSql(sql);
+      const result = await this.db?.executeSql(sql);
+      return result?.[0].rowsAffected ?? 0 > 0 ? true : false;
+
     } catch (error) {
       console.log('deleting entry failed');
       console.error(error);
     }
+
+    return false;
   };
 
   async saveAllIncome(data: Entry[]){

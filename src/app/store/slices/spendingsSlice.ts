@@ -36,6 +36,10 @@ export const entrySlice = createSlice({
     }),
     builder.addCase(saveAllIncome.fulfilled, (state, action)=>{
       state.entries = action.payload
+    }),
+    builder.addCase(deleteSpending.fulfilled, (state, action)=>{
+      const id = action.payload;
+      state.entries = state.entries.filter(el => el.id !== id);
     })
   },
 });
@@ -62,6 +66,20 @@ export const updateSpending = createAsyncThunk(
     return data;
   },
 );
+
+
+/***
+ * Delete income or expense action
+ */
+export const deleteSpending = createAsyncThunk("spending/delete", async (data: Entry)=>{
+
+  const result = await databaseService.deleteEntry(data);
+  //TODO: add show error message
+
+  return data.id;
+
+});
+
 
 export const saveAllIncome = createAsyncThunk('spending/setupIncome', async (data: Entry[], thunkAPI)=>{
   await databaseService.saveAllIncome(data);

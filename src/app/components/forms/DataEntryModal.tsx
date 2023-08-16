@@ -53,6 +53,12 @@ const saveEntry = async (newEntry: Entry) => {
     await dispatch(saveSpending(newEntry));
 };
 
+const onDelete = () =>{
+
+  dispatch(deleteSpending(props.editElement!));
+  props.onClose();
+}
+
   return (
     <Modal
       animationType="slide"
@@ -72,7 +78,7 @@ const saveEntry = async (newEntry: Entry) => {
         </View>
        
         <ExpenseIncomeSwitch value={type} onValueChange={setType} />
-        <DataEntryForm data={props.editElement} categories={categories[type]} onSave={saveEntry} onUpdate={updateEntry} />
+        <DataEntryForm data={props.editElement} categories={categories[type]} onSave={saveEntry} onUpdate={updateEntry} onDelete={onDelete} />
       </View>
     </Modal>
   );

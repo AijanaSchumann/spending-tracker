@@ -26,6 +26,7 @@ type Props = {
     categories: Category[],
     onSave(data: Entry): Promise<void>
     onUpdate(data: Entry): void
+    onDelete(): void,
     data: Entry | null
 }
 const DataEntryForm = (props: Props) =>{
@@ -144,7 +145,8 @@ const DataEntryForm = (props: Props) =>{
     
           {isInEditMode ? (
             <View style={{flexDirection:"row", display: "flex"}}>
-              <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onUpdate} />
+              <TextButton fullWidth icon={faTrashCan} title="Delete" color="#DA4343" onAction={props.onDelete} />
+              <TextButton fullWidth icon={faSave} title="Save" color="#189EEC" onAction={onUpdate} />
             </View>
           ) : (
             <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onSave} />
