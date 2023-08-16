@@ -1,5 +1,5 @@
-import React, {FC} from 'react';
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, {FC, useState} from 'react';
+import {FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Entry} from '../models/entry';
 import {RootState} from '../store/store';
@@ -35,16 +35,17 @@ const styles = StyleSheet.create({
 
 const Overview: FC = ({navigation}: any) => {
   const entries = useSelector((state: RootState) => state.spending.entries);
-  const income = useSelector((state: RootState) => state.income.income);
   const currency = useSelector((state: RootState)=> state.settings.currency).symbol;
 
-  const data = [...entries, ...income];
+  const data = [...entries];
 
   const [filteredData, setFilteredData] = React.useState<(Entry)[]>([]);
-  const [isDataEntryVisible, showDataEntry] = React.useState(false);
+  const [isModalVisible, showModal] = React.useState(false);
+  const [editEntry, setEditEntry] = useState<Entry | null>(null);
 
   const Spending = ({data}: {data: Entry}) => (
     <View style={styles.mainContainer}>
+      <Pressable onPress={()=> onEditElement(data)} >
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <Text style={[styles.text, {alignSelf: 'center', marginHorizontal: 5}]}>
           {data.categoryId}
@@ -60,11 +61,13 @@ const Overview: FC = ({navigation}: any) => {
           - {data.value} {currency}
         </Text>
       </View>
+      </Pressable>
     </View>
   );
 
   const Income = ({data}: {data: Entry}) => (
     <View style={styles.mainContainer}>
+      <Pressable onPress={()=> onEditElement(data)} >
       <View style={{display: 'flex', flexDirection: 'row'}}>
         <View style={{flex: 1, flexDirection: 'column'}}>
           <Text style={styles.text}>Income</Text>
@@ -72,8 +75,19 @@ const Overview: FC = ({navigation}: any) => {
         </View>
         <Text style={[styles.valueText, styles.income]}>+ {data.value} {currency}</Text>
       </View>
+      </Pressable>
     </View>
   );
+
+  const onEditElement = (data: Entry) =>{
+    setEditEntry(data);
+    showModal(true);
+  }
+
+  const onModalClose = () =>{
+    showModal(false);
+    setEditEntry(null);
+  }
 
   return (
     <SafeAreaView>
@@ -101,8 +115,12 @@ const Overview: FC = ({navigation}: any) => {
         )}
       </View>
 
-      <FAB icon={faPlus} color="#189EEC" onPress={() => showDataEntry(true)} />
-      <DataEntryModal isVisible={isDataEntryVisible} onClose={() => showDataEntry(false)} />
+      <FAB icon={faPlus} color="#189EEC" onPress={()=> showModal(true)} />
+      {
+        isModalVisible &&
+        <DataEntryModal editElement={editEntry} isVisible onClose={onModalClose} />
+      }
+      
     </SafeAreaView>
   );
 };

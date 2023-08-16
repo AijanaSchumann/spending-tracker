@@ -1,7 +1,9 @@
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import Modal from 'react-native-modal/dist/modal';
+import ReactNativeModal from 'react-native-modal';
+
+import '../../../extensions/DateExtension';
 
 type Props = {
   date: Date;
@@ -30,7 +32,7 @@ const CustomDatePicker = (props: Props) => {
               {props.date.toDayName()}, {props.date.toLocaleDateString()}
             </Text>
           </Pressable>
-          <Modal
+          <ReactNativeModal
             isVisible={isVisible}
             animationIn={"fadeIn"}
             animationOut={"fadeOut"}
@@ -45,7 +47,7 @@ const CustomDatePicker = (props: Props) => {
                 }}
               />
             </View>
-          </Modal>
+          </ReactNativeModal>
         </View>
   );
 };

@@ -20,7 +20,7 @@ const Home: FC = ({ navigation } : any) =>{
     <SafeAreaView> 
       <ExpenseRatio expenses={monthlySpend} income={monthlyIncome} />
       <Button title="Add Entry" onPress={()=>{ showDataEntry(true); }} />
-      <DataEntryModal isVisible={isDataEntryVisible} onClose={() => showDataEntry(false)} />
+      <DataEntryModal editElement={null} isVisible={isDataEntryVisible} onClose={() => showDataEntry(false)} />
     </SafeAreaView>)
 }
 

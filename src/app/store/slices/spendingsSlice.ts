@@ -8,55 +8,43 @@ import { createInitialCategories, loadDataOnStartup } from '../actions/SetupActi
 import { saveCategory } from '../actions/SettingsActions';
 
 export interface EntryState {
-  entries: Entry[];
-  categories: Category[];
-  entryToUpdate: Entry | null;
+  entries: Entry[],
 }
 
 const initialState: EntryState = {
-  entries: [],
-  entryToUpdate: null,
-  categories: []
+  entries: []
 };
 
 export const entrySlice = createSlice({
   name: 'spending',
   initialState,
   reducers: {
-    editSpending: (state, action: PayloadAction<Entry>) => {
-      state.entryToUpdate = action.payload;
-    }
   },
   extraReducers(builder) {
     builder.addCase(loadDataOnStartup.fulfilled, (state, action) =>{
       const payload = action.payload;
-      state.entries = payload.data.expense || []
-      state.categories = payload.categories.expense;
+      state.entries = payload.data || []
      }),
-     builder.addCase(createInitialCategories.fulfilled, (state, action)=>{
-      state.categories = action.payload.expense;
-     }),
-    builder.addCase(saveExpense.fulfilled, (state, action) => {
+    builder.addCase(saveSpending.fulfilled, (state, action) => {
       state.entries = state.entries.concat(action.payload);
     }),
-    builder.addCase(saveUpdatedExpense.fulfilled, (state, action)=>{
+    builder.addCase(updateSpending.fulfilled, (state, action)=>{
       const data = action.payload;
-      state.entryToUpdate=null;
       state.entries = state.entries.map(el =>
         el.id === data.id ? data : el
       );
     }),
-    builder.addCase(saveCategory.fulfilled, (state, action)=>{
-      const data = action.payload;
-      if(data?.type === "expense"){
-        state.categories = state.categories.concat(data);
-      }
+    builder.addCase(saveAllIncome.fulfilled, (state, action)=>{
+      state.entries = action.payload
     })
   },
 });
 
-export const saveExpense = createAsyncThunk(
-  'spending/saveExpense',
+/***
+ * Save income or expense action
+ */
+export const saveSpending = createAsyncThunk(
+  'spending/save',
   async (data: Entry, thunkAPI) => {
     const result = await databaseService.saveEntry(data);
     data.id = result;
@@ -64,15 +52,26 @@ export const saveExpense = createAsyncThunk(
   },
 );
 
-export const saveUpdatedExpense = createAsyncThunk(
-  'spending/updateExpense',
+/***
+ * update income or expense action
+ */
+export const updateSpending = createAsyncThunk(
+  'spending/update',
   async (data: Entry, thunkAPI) => {
     const result = await databaseService.saveEntry(data);
     return data;
   },
 );
 
-export const { editSpending: editEntry} =
-  entrySlice.actions;
+export const saveAllIncome = createAsyncThunk('spending/setupIncome', async (data: Entry[], thunkAPI)=>{
+  await databaseService.saveAllIncome(data);
+  //reload data to get ids
+  const result = await databaseService.loadIncome();
+  console.log("reloaded data")
+  console.log(result);
+  return result;
+});
+
+export const { } = entrySlice.actions;
 
 export default entrySlice.reducer;

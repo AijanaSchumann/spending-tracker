@@ -1,10 +1,13 @@
-import {faDollarSign, faShoppingCart} from '@fortawesome/free-solid-svg-icons';
+import {faDollarSign, faShoppingCart, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import React, {useState} from 'react';
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import AddExpense from './AddExpense';
-import AddIncome from './AddIncome';
 import ExpenseIncomeSwitch from '../general/ExpenseIncomeSwitch';
+import { Entry } from '../../models/entry';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatcher, RootState } from '../../store/store';
+import { deleteSpending, saveSpending, updateSpending } from '../../store/slices/spendingsSlice';
+import DataEntryForm from './DataEntryForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,20 +15,43 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    textAlign: 'center',
+    alignItems:"center",
+    alignSelf: "center",
+    textAlign: "center",
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 30,
+    flexGrow: 1
   },
 });
 
 type Props = {
+  editElement: Entry | null
   isVisible: boolean;
   onClose(): void;
 };
 
 const DataEntryModal = (props: Props) => {
 
-  const [type, setType] = useState<'expense' | 'income'>('expense');
+  const dispatch = useDispatch<Dispatcher>();
+
+  const categories = useSelector((state: RootState)=> state.settings.categories);
+
+  const [type, setType] = useState<'expense' | 'income'>(props.editElement?.type || 'expense');
+
+  const action = props.editElement ? "Update" : "New";
+
+  const updateEntry = (updatedEntry: Entry) => {
+    
+    updatedEntry.type=type;
+    dispatch(updateSpending(updatedEntry));
+    props.onClose();
+};
+
+const saveEntry = async (newEntry: Entry) => {
+  
+    newEntry.type=type;
+    await dispatch(saveSpending(newEntry));
+};
 
   return (
     <Modal
@@ -34,13 +60,19 @@ const DataEntryModal = (props: Props) => {
       presentationStyle="pageSheet"
       visible={props.isVisible}>
       <View style={{padding: 20, display: 'flex'}}>
-        <Text style={styles.header}>New {type}</Text>
+      <View style={{flexDirection: "row"}}>
+          <Pressable onPress={props.onClose}>
+            <FontAwesomeIcon
+              style={{alignSelf: 'flex-start'}}
+              size={20}
+              icon={faXmark}
+            />
+          </Pressable>
+          <Text style={styles.header}>{action} {type}</Text>
+        </View>
+       
         <ExpenseIncomeSwitch value={type} onValueChange={setType} />
-        {type === 'expense' ? (
-          <AddExpense onClose={props.onClose} />
-        ) : (
-          <AddIncome onClose={props.onClose} />
-        )}
+        <DataEntryForm data={props.editElement} categories={categories[type]} onSave={saveEntry} onUpdate={updateEntry} />
       </View>
     </Modal>
   );

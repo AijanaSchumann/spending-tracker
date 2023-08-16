@@ -15,12 +15,7 @@ import {faImage, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 const CategoryList = () => {
-  const incomeCategories = useSelector(
-    (state: RootState) => state.income.categories,
-  );
-  const expenseCategories = useSelector(
-    (state: RootState) => state.spending.categories,
-  );
+  const categories = useSelector((state: RootState) => state.settings.categories);
 
   const [isModalVisible, setVisible] = useState(false);
   const [showIcons, setShowIcons] = useState(false); // TODO: save to db / store
@@ -53,8 +48,8 @@ const CategoryList = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <CategorySection title="Expense" data={expenseCategories} />
-        <CategorySection title="Income" data={incomeCategories} />
+        <CategorySection title="Expense" data={categories.expense} />
+        <CategorySection title="Income" data={categories.income} />
       </ScrollView>
       <Text style={{marginTop: 5}}>Show icons?</Text>
       <Switch value={showIcons} onValueChange={setShowIcons} />

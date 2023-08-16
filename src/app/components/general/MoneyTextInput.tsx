@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     marginLeft: 70,
     marginRight: 70,
-    marginTop: 20,
+    marginTop: 30,
   },
   text: {
     fontSize: 25,
@@ -45,7 +45,7 @@ const MoneyTextInput: FC<Props> = (props: Props) => {
         <TextInput
           value={props.value}
           style={[styles.text, styles.textInput]}
-          placeholder="0.00"
+          placeholder="amount"
           keyboardType="numeric"
           onChangeText={props.onChangeText}></TextInput>
         <Text style={[styles.text, styles.adornment]}>{currency}</Text>

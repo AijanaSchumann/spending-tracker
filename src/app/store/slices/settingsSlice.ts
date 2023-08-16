@@ -1,17 +1,31 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import databaseService from "../../services/dbService";
-import { loadDataOnStartup } from "../actions/SetupAction";
+import { createInitialCategories, loadDataOnStartup } from "../actions/SetupAction";
 import { Currency, currencyList } from "../../constants/currencyList";
 import { SaveSetting, SupportedSettings } from "../../models/settings";
+import { Category } from "../../models/category";
+import { saveCategory } from "../actions/SettingsActions";
+
+type CategoryState = {
+    income: Category[],
+    expense: Category[],
+    showIcons: boolean
+}
 
 export interface SettingsState {
     appFirstRun: boolean | null,
-    currency: Currency
+    currency: Currency,
+    categories: CategoryState
 }
 
 const initialState: SettingsState = {
     currency: currencyList[0],
-    appFirstRun: null
+    appFirstRun: null,
+    categories: {
+        income: [],
+        expense: [],
+        showIcons: false
+    }
 }
 
 export const settingsSlice = createSlice({
@@ -24,17 +38,35 @@ export const settingsSlice = createSlice({
   },
   extraReducers(builder){
    builder.addCase(loadDataOnStartup.fulfilled, (state, action) =>{
-    const payload = action.payload.settings;
+    const payload = action.payload;
+    const otherSettings = payload.settings;
 
     for(const prop in state){
-        if(payload[prop])
-           state[(prop as SupportedSettings)] = payload[prop];
+        if(otherSettings[prop])
+           state[(prop as SupportedSettings)] = otherSettings[prop];
     }
+
+    state.categories.expense = payload.categories.expense;
+    state.categories.income = payload.categories.income;
+
    }),
    builder.addCase(saveSetting.fulfilled, (state, action)=>{
     const payload = action.payload;
     state[payload.settingsName] = payload.value
-   })
+   }),
+   builder.addCase(createInitialCategories.fulfilled, (state, action)=>{
+    state.categories.expense = action.payload.expense;
+    state.categories.income = action.payload.income;
+   }),
+   builder.addCase(saveCategory.fulfilled, (state, action)=>{
+    const data = action.payload;
+    if(data?.type === "expense"){
+      state.categories.expense = state.categories.expense.concat(data);
+    }else if (data?.type === "income")
+    {
+        state.categories.income = state.categories.income.concat(data);
+    }
+  })
   }
 });
 

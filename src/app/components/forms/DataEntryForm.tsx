@@ -7,8 +7,9 @@ import { useState } from "react"
 import { Entry } from "../../models/entry"
 import { Category } from "../../models/category"
 import FAB from "../general/FAB"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { intervalList } from "../../constants/intervalList"
+import TextButton from "../general/buttons/TextButton"
 
 const styles = StyleSheet.create({
     container: {padding: 10},
@@ -96,7 +97,8 @@ const DataEntryForm = (props: Props) =>{
 
 
     return (
-        <View style={{height: '90%'}}>
+        <View>
+          <View style={{height: '83%'}}>
            
           <MoneyTextInput value={input} onChangeText={setInput} error={error} />
           <Text style={[styles.label, {marginTop: 30}]}>Category</Text>
@@ -108,7 +110,7 @@ const DataEntryForm = (props: Props) =>{
             onValueChange={(ev: any) => setCategory(ev)}>
             <Picker.Item label="" value={undefined} />
             {props.categories.map(category => {
-              return <Picker.Item label={category.title} value={category.id} />;
+              return <Picker.Item key={category.id} label={category.title} value={category.id} />;
             })}
           </CustomPicker>
           {error && !categoryId && <Text style={styles.error}>Please select a category</Text>}
@@ -138,11 +140,14 @@ const DataEntryForm = (props: Props) =>{
             value={note}
             onChangeText={setNote}
           />
+          </View> 
     
           {isInEditMode ? (
-            <FAB icon={faSave} color="#189EEC" onPress={onUpdate} />
+            <View style={{flexDirection:"row", display: "flex"}}>
+              <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onUpdate} />
+            </View>
           ) : (
-            <FAB center icon={faSave} color="#189EEC" onPress={onSave} />
+            <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onSave} />
           )}
         </View>
       );

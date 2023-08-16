@@ -15,12 +15,12 @@ import {faAdd} from '@fortawesome/free-solid-svg-icons/faAdd';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import AddFurtherIncome from './AddFurtherIncome';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveAllIncome } from '../../../store/slices/incomeSlice';
 import { Entry } from '../../../models/entry';
 import { Dispatcher, RootState } from '../../../store/store';
 import MoneyTextInput from '../../../components/general/MoneyTextInput';
 import { intervalList } from '../../../constants/intervalList';
 import { useNavigation } from '@react-navigation/native';
+import { saveAllIncome } from '../../../store/slices/spendingsSlice';
 
 const styles = StyleSheet.create({
   container: {paddingLeft: 20, paddingRight: 20, marginBottom: 35},
@@ -52,7 +52,7 @@ const SetupIncome = (props: Props) => {
   };
 
   const dispatch = useDispatch<Dispatcher>();
-  const categories = useSelector((state: RootState)=> state.income.categories);
+  const categories = useSelector((state: RootState)=> state.settings.categories.income);
 
   const [income, setIncome] = React.useState<string>("");
   const [interval, setInterval] = React.useState('monthly');
@@ -85,14 +85,14 @@ const SetupIncome = (props: Props) => {
       setError(false);
       const incomeArray: Entry[] = [
         {value: Number(income), interval: interval, date: new Date().getTime(), categoryId: categoryId, type: "income", note: ""},
-        ...furtherIncome.map<Entry>(res => {
+        ...furtherIncome.map<Entry>((res)  => {
           return {
             type: "income",
             value: res.value,
             interval: res.reaccuring ? res.interval : null,
             note: res.note,
             date: new Date().getTime(),
-            categoryId: giftId!.id,
+            categoryId: giftId!.id!,
           };
         }),
       ];

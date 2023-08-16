@@ -1,13 +1,11 @@
 import { PreloadedState, combineReducers, configureStore } from "@reduxjs/toolkit";
-import entryReducer from './slices/expenseSlice';
-import incomeReducer from "./slices/incomeSlice";
+import entryReducer from './slices/spendingsSlice';
 import settingsReducer from "./slices/settingsSlice";
 
 
 // Create the root reducer separately so we can extract the RootState type
 const rootReducer = combineReducers({
   spending: entryReducer,
-  income: incomeReducer,
   settings: settingsReducer,
 })
 
