@@ -135,17 +135,7 @@ export class DbService {
 
   async deleteEntry(entry: Entry){
 
-    const sql = `DELETE FROM '${this.entryTableName}' WHERE id = ${entry.id};`;
-    try {
-      const result = await this.db?.executeSql(sql);
-      return result?.[0].rowsAffected ?? 0 > 0 ? true : false;
-
-    } catch (error) {
-      console.log('deleting entry failed');
-      console.error(error);
-    }
-
-    return false;
+    return this.deleteById(this.entryTableName, entry.id!);
   };
 
   async saveAllIncome(data: Entry[]){
@@ -185,8 +175,35 @@ export class DbService {
     return undefined;
   }
 
-  async updateCategory(updatedCategory: Category){
+  async updateCategory(category: Category){
+    const sql = `INSERT OR REPLACE INTO '${this.categoriesTableName}' (id, title, type, note, icon, color, background) values (?,?,?,?,?,?,?)`;
 
+    try{
+      const result = await this.db?.executeSql(sql, [category.id!, category.title, category.type, category.note, category.icon, category.color, category.background]);
+      return result?.[0].rowsAffected !== undefined ? true : false;
+    }catch(err){
+      console.error(err);
+    }
+    return false;
+  }
+
+  async deleteCategory(category : Category){
+
+    return this.deleteById(this.categoriesTableName, category.id!);
+  }
+
+  private async deleteById(tableName: string, id: number){
+    const sql = `DELETE FROM '${tableName}' WHERE id = ${id};`;
+    try {
+      const result = await this.db?.executeSql(sql);
+      return result?.[0].rowsAffected ?? 0 > 0 ? true : false;
+
+    } catch (error) {
+      console.log('deleting entry failed');
+      console.error(error);
+    }
+
+    return false;
   }
 
   private async createEntryTable(){

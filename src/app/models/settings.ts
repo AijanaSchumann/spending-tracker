@@ -1,7 +1,7 @@
 
 export type SaveSetting = { settingsName: SupportedSettings, value: any };
 
-export type SupportedSettings = "currency";
+export type SupportedSettings = "currency" | "categories";
 
 export type Setting = {
     key: string,

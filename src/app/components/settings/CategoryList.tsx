@@ -1,4 +1,5 @@
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Switch,
@@ -6,21 +7,37 @@ import {
   View,
 } from 'react-native';
 import {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../store/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {Dispatcher, RootState} from '../../store/store';
 import {Category} from '../../models/category';
 import AddCategoryModal from '../forms/AddCategory';
 import FAB from '../general/FAB';
 import {faImage, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { saveShowCategoryIcons } from '../../store/actions/SettingsActions';
 
 const CategoryList = () => {
   const categories = useSelector((state: RootState) => state.settings.categories);
 
+  const showIcons = useSelector((state: RootState)=> state.settings.categories.showIcons);
+
+  const dispatcher = useDispatch<Dispatcher>();
+
   const [isModalVisible, setVisible] = useState(false);
-  const [showIcons, setShowIcons] = useState(false); // TODO: save to db / store
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+
+  const onClose = () => {
+    setVisible(false);
+    setSelectedCategory(null);
+  }
 
   const CategorySection = ({title,data}: { title: string, data: Category[] }) => {
+
+    const onEditCategory = (category: Category) => {
+      setSelectedCategory(category);
+      setVisible(true);
+    }
+
     return (
       <>
         <View style={styles.section}>
@@ -28,18 +45,24 @@ const CategoryList = () => {
         </View>
         {data.map(el => {
           return (
-            <View style={styles.itemRow} key={el.id}>
-              {showIcons && (
-                <View style={[styles.iconBackground,{backgroundColor: el.background || 'white'}]}>
-                  {el.icon ? (
-                    <FontAwesomeIcon color={el.color || 'black'} size={25} icon={['fas', el.icon as any]} />
-                  ) : (
-                    <FontAwesomeIcon size={25} icon={faImage} />
-                  )}
-                </View>
-              )}
-              <Text style={styles.itemTitle}>{el.title}</Text>
-            </View>
+            <Pressable onPress={() => onEditCategory(el)}>
+              <View style={styles.itemRow} key={el.id}>
+                {showIcons && (
+                  <View style={[styles.iconBackground,{backgroundColor: el.background || 'white'}]}>
+                    {el.icon ? (
+                      <FontAwesomeIcon
+                        color={el.color || 'black'}
+                        size={25}
+                        icon={['fas', el.icon as any]}
+                      />
+                    ) : (
+                      <FontAwesomeIcon size={25} icon={faImage} />
+                    )}
+                  </View>
+                )}
+                <Text style={styles.itemTitle}>{el.title}</Text>
+              </View>
+            </Pressable>
           )})}
       </>
     )
@@ -51,19 +74,20 @@ const CategoryList = () => {
         <CategorySection title="Expense" data={categories.expense} />
         <CategorySection title="Income" data={categories.income} />
       </ScrollView>
-      <Text style={{marginTop: 5}}>Show icons?</Text>
-      <Switch value={showIcons} onValueChange={setShowIcons} />
+      <Text>Show icons?</Text>
+      <Switch value={showIcons} onValueChange={(e) => {dispatcher(saveShowCategoryIcons(e))}} />
 
       <FAB
         icon={faPlus}
-        position={{bottom: -50, right: 0}}
+        position={{bottom: -10, right: 0}}
         color="#189EEC"
-        onPress={() => setVisible(!isModalVisible)}
+        onPress={() => setVisible(true)}
       />
-      <AddCategoryModal
-        isVisible={isModalVisible}
-        onClose={() => setVisible(!isModalVisible)}
-      />
+      {
+        isModalVisible && 
+        <AddCategoryModal editElement={selectedCategory} isVisible onClose={onClose} />
+      }
+      
     </View>
   );
 };
@@ -73,7 +97,7 @@ export default CategoryList;
 
 const styles = StyleSheet.create({
     container: {padding: 5, marginTop: 10},
-    scrollView: {height: '80%', marginBottom: 10},
+    scrollView: {height: '85%', marginBottom: 10},
     itemRow: {
       display: 'flex',
       flexDirection: 'row',

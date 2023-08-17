@@ -4,7 +4,7 @@ import { createInitialCategories, loadDataOnStartup } from "../actions/SetupActi
 import { Currency, currencyList } from "../../constants/currencyList";
 import { SaveSetting, SupportedSettings } from "../../models/settings";
 import { Category } from "../../models/category";
-import { saveCategory } from "../actions/SettingsActions";
+import { deleteCategory, saveCategory, saveShowCategoryIcons, updateCategory } from "../actions/SettingsActions";
 
 type CategoryState = {
     income: Category[],
@@ -60,12 +60,29 @@ export const settingsSlice = createSlice({
    }),
    builder.addCase(saveCategory.fulfilled, (state, action)=>{
     const data = action.payload;
-    if(data?.type === "expense"){
-      state.categories.expense = state.categories.expense.concat(data);
-    }else if (data?.type === "income")
-    {
-        state.categories.income = state.categories.income.concat(data);
+    if(data){
+        state.categories[data.type] = state.categories[data.type].concat(data);
     }
+  }),
+  builder.addCase(updateCategory.fulfilled, (state, action)=>{
+
+    const data = action.payload?.data;
+    if(data){
+        if(action.payload?.switchType){
+            state.categories[data.type] = state.categories[data.type].concat(data);
+            state.categories[data.type === "expense" ? "income": "expense"] = state.categories[data.type === "expense" ? "income": "expense"].filter(el => el.id != data.id);
+        }else{
+            state.categories[data.type] = state.categories[data.type].map(el => el.id == data.id ? data : el);
+        }
+    }
+  }),
+  builder.addCase(deleteCategory.fulfilled, (state, action)=>{
+    const data = action.payload;
+    if(data)
+      state.categories[data.type] = state.categories[data.type].filter(el => el.id != data.id);
+  }),
+  builder.addCase(saveShowCategoryIcons.fulfilled, (state, action)=>{
+    state.categories.showIcons = action.payload;
   })
   }
 });

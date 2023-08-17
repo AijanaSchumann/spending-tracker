@@ -1,5 +1,5 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   Modal,
   Pressable,
@@ -12,24 +12,42 @@ import IconPicker from '../general/picker/IconPicker';
 import CustomColorPicker from '../general/picker/ColorPicker';
 import ExpenseIncomeSwitch from '../general/ExpenseIncomeSwitch';
 import TextButton from '../general/buttons/TextButton';
-import {faImage, faXmark} from '@fortawesome/free-solid-svg-icons';
-import {useDispatch} from 'react-redux';
-import {Dispatcher} from '../../store/store';
+import {faImage, faSave, faXmark} from '@fortawesome/free-solid-svg-icons';
+import {useDispatch, useSelector} from 'react-redux';
+import {Dispatcher, RootState} from '../../store/store';
 import {Category} from '../../models/category';
+import { deleteCategory, saveCategory, updateCategory } from '../../store/actions/SettingsActions';
 
-type Props = { isVisible: boolean; onClose(): void};
+type Props = { 
+  editElement: Category | null
+  isVisible: boolean; 
+  onClose(): void};
 
 const AddCategoryModal = (props: Props) => {
     
   const dispatch = useDispatch<Dispatcher>();
+  const categories = useSelector((state: RootState)=> state.settings.categories);
 
-  const [value, setValue] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState('');
-  const [selectedColor, setSelectedColor] = useState('black');
-  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState('white');
-  const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [value, setValue] = useState(props.editElement?.title || '');
+  const [selectedIcon, setSelectedIcon] = useState(props.editElement?.icon || '');
+  const [selectedColor, setSelectedColor] = useState(props.editElement?.color || 'black');
+  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(props.editElement?.background || 'white');
+  const [type, setType] = useState<'expense' | 'income'>(props.editElement?.type || 'expense');
   const [error, setError] = useState(false);
+  const [infoMessage, setInfoMessage] = useState("");
   const [modal, showModal] = useState<JSX.Element | null>(null);
+
+  useEffect(()=>{
+
+    return () =>{
+      clearTimeout(timeout.current);
+    }
+
+  },[]);
+
+  const timeout = useRef<undefined | ReturnType<typeof setTimeout>>(undefined);
+
+  const isInEditMode = props.editElement !== null;
 
   const colorModal = (
     <CustomColorPicker
@@ -51,6 +69,7 @@ const AddCategoryModal = (props: Props) => {
 
   const iconModal = (
     <IconPicker
+    selectedIcon={selectedIcon}
       isVisible
       onClose={icon => {
         showModal(null);
@@ -71,9 +90,52 @@ const AddCategoryModal = (props: Props) => {
         color: selectedColor,
         background: selectedBackgroundColor,
       };
-     //TODO: add action to save
+      dispatch(saveCategory(newCategory));
+      props.onClose();
     }
   };
+
+  const onUpdate = () => {
+    if (value.length === 0) {
+      setError(true);
+    } else {
+      setError(false);
+
+      const updateType = props.editElement?.type !== type;
+
+      const newCategory: Category = {
+        id: props.editElement?.id!,
+        title: value,
+        type: type,
+        icon: selectedIcon,
+        color: selectedColor,
+        background: selectedBackgroundColor,
+      };
+      dispatch(updateCategory({data: newCategory, switchType: updateType}));
+      props.onClose();
+    }
+  }
+
+  const onDelete = () =>{
+
+    dispatch(deleteCategory(props.editElement!));
+    props.onClose();
+
+  }
+
+  const checkForDuplicateCategories = (newValue: string) =>{
+    setInfoMessage("");
+    clearTimeout(timeout.current);
+    const allCategories = [...categories.expense, ...categories.income];
+
+    timeout.current = setTimeout(()=>{
+      if(!!allCategories.find(el => el.title == newValue)){
+        setInfoMessage("Category with the same name exists.");
+      }
+   }, 1000);
+  }
+
+  const titleAction = isInEditMode ? "Update" : "New";
 
   return (
     <Modal
@@ -90,7 +152,7 @@ const AddCategoryModal = (props: Props) => {
               icon={faXmark}
             />
           </Pressable>
-          <Text style={styles.header}>New Category</Text>
+          <Text style={styles.header}>{titleAction} Category</Text>
         </View>
 
         <View style={{height: '85%'}}>
@@ -100,11 +162,16 @@ const AddCategoryModal = (props: Props) => {
             onChangeText={ev => {
               setValue(ev);
               setError(false);
+              checkForDuplicateCategories(ev);
             }}
             style={{fontSize: 20}}
             placeholder="streaming"
           />
           {error && <Text style={{color: 'red'}}>Cannot be empty</Text>}
+          {
+            infoMessage.length>0 &&
+            <Text style={{color: 'green'}}>{infoMessage}</Text>
+          }
 
           <Text style={styles.label}>Appearance</Text>
 
@@ -131,20 +198,16 @@ const AddCategoryModal = (props: Props) => {
           <Text style={styles.label}>Type</Text>
           <ExpenseIncomeSwitch value={type} onValueChange={setType} />
         </View>
-        <View style={styles.buttonRow}>
-          <TextButton
-            color="white"
-            borderColor="red"
-            title="Cancel"
-            onAction={props.onClose}
-          />
-          <TextButton
-            color="white"
-            borderColor="black"
-            onAction={onSave}
-            title="Save"
-          />
-        </View>
+        {
+          isInEditMode ?
+          <View style={{display: "flex", flexDirection: "row"}}>
+            <TextButton icon={faSave} title="Delete" color="#DA4343" onAction={onDelete} />
+            <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onUpdate} />
+          </View>
+          :
+          <TextButton icon={faSave} title="Save" color="#189EEC" onAction={onSave} />
+        }
+       
         {modal && modal}
       </View>
     </Modal>

@@ -4,11 +4,15 @@ import {Button, FlatList, Pressable, View} from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import SearchBar from '../SearchBar';
 
-type Props = {isVisible: boolean; onClose(selectedIcon: string | null): void};
+type Props = {
+  isVisible: boolean; 
+  onClose(selectedIcon: string | null): void;
+  selectedIcon: string | null
+};
 
 const IconPicker = (props: Props) => {
 
-  const [selectedIcon, setSelectedIcon] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState(props.selectedIcon || '');
   const [filteredList, setFilteredList] = useState(icons);
   const [searchTerm, setSearchTerm] = useState('');
 
