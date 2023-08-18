@@ -45,7 +45,7 @@ const DayFilter = (props: Props) => {
     } else {
       const data = [...props.data].filter(el => {
         const date = new Date(el.date);
-        return date.getMonth() === month && date.getDate() === day;
+        return date.getMonth() === month && date.getDate() === day && date.getFullYear() === year;
       });
 
       props.onFilterChanged(data);
