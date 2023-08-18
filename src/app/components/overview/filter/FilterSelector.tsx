@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Entry} from '../../../models/entry';
-import MonthOrDayFilter from './MonthOrDayFilter';
+import MonthFilter from './MonthFilter';
 import {useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import { FilterConfig, FilterTypes, SupportedFilters } from '../../../models/filterTypes';
@@ -87,7 +87,7 @@ const onFilterChanged = (data: (Entry)[]) => {
 
   const AllFilters: FilterConfigDictionary = {
     [SupportedFilters.month]: {
-      content: <MonthOrDayFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
+      content: <MonthFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
     },
     [SupportedFilters.day]: {
       content: <DayFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
