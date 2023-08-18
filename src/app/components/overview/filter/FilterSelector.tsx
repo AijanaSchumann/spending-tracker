@@ -9,6 +9,7 @@ import AscendingDescendingFilter from './AscendingDescendingFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatcher, RootState } from '../../../store/store';
 import { filterEntries } from '../../../store/slices/overviewSlice';
+import DayFilter from './DayFilter';
 
 type Props = {
   activeFilter: SupportedFilters;
@@ -89,7 +90,7 @@ const onFilterChanged = (data: (Entry)[]) => {
       content: <MonthOrDayFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
     },
     [SupportedFilters.day]: {
-      content: <MonthOrDayFilter data={entries} onFilterChanged={onFilterChanged} {...props} isDay />,
+      content: <DayFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
     },
     [SupportedFilters.income]: {
       content: <IncomeFilter />,
