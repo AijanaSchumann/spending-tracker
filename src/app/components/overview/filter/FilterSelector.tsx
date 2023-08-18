@@ -1,15 +1,16 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {Entry} from '../../../models/entry';
 import MonthOrDayFilter from './MonthOrDayFilter';
 import {useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import { FilterConfig, FilterTypes, SupportedFilters } from '../../../models/filterTypes';
-import { faRepeat, faSortAsc, faSortDesc } from '@fortawesome/free-solid-svg-icons';
+import { faRepeat } from '@fortawesome/free-solid-svg-icons';
 import AscendingDescendingFilter from './AscendingDescendingFilter';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatcher, RootState } from '../../../store/store';
+import { filterEntries } from '../../../store/slices/overviewSlice';
 
 type Props = {
-  data: (Entry )[];
-  onFilterChanged(data: (Entry)[]): void;
   activeFilter: SupportedFilters;
   onActiveFilterChange: (data:FilterTypes)=> void
 };
@@ -22,6 +23,9 @@ const styles = StyleSheet.create({
 
 const FilterSelector = (props: Props) => {
 
+  const entries = useSelector((state : RootState)=> state.spending.entries)
+  const dispatch = useDispatch<Dispatcher>();
+
   useEffect(() => {
     const activeFilter = AllFilters[props.activeFilter];
     console.log("filter prop: "+props.activeFilter);
@@ -29,20 +33,26 @@ const FilterSelector = (props: Props) => {
 
     if (activeFilter.filteredData) {
       const data = activeFilter.filteredData();
-      props.onFilterChanged(data);
+      
+      onFilterChanged(data);
     }
   }, [props.activeFilter]);
 
- /* useEffect(() => {
+  useEffect(() => {
     const activeFilter = AllFilters[props.activeFilter];
     if (activeFilter.filteredData) {
       const data = activeFilter.filteredData();
-      props.onFilterChanged(data);
+      onFilterChanged(data);
     }
-},[props.data]);*/
+},[entries]);
+
+const onFilterChanged = (data: (Entry)[]) => {
+
+  dispatch(filterEntries(data));
+}
 
   const incomeFilter = () => {
-    const data = props.data.filter((el) => el.type === "income");
+    const data = entries.filter((el) => el.type === "income");
     return data;
   };
 
@@ -58,7 +68,7 @@ const FilterSelector = (props: Props) => {
   };
 
   const reacurringFilter = () => {
-    return props.data.filter(
+    return entries.filter(
       (el: Entry) => el.interval && el.interval?.length > 0,
     );
   };
@@ -76,10 +86,10 @@ const FilterSelector = (props: Props) => {
 
   const AllFilters: FilterConfigDictionary = {
     [SupportedFilters.month]: {
-      content: <MonthOrDayFilter {...props} />,
+      content: <MonthOrDayFilter data={entries} onFilterChanged={onFilterChanged} {...props} />,
     },
     [SupportedFilters.day]: {
-      content: <MonthOrDayFilter {...props} isDay />,
+      content: <MonthOrDayFilter data={entries} onFilterChanged={onFilterChanged} {...props} isDay />,
     },
     [SupportedFilters.income]: {
       content: <IncomeFilter />,
@@ -90,10 +100,10 @@ const FilterSelector = (props: Props) => {
       filteredData: reacurringFilter,
     },
     [SupportedFilters.ascDescValue]: {
-      content: <AscendingDescendingFilter {...props} type="value" />,
+      content: <AscendingDescendingFilter data={entries} onFilterChanged={onFilterChanged} {...props} type="value" />,
     },
     [SupportedFilters.ascDescDate]: {
-      content: <AscendingDescendingFilter {...props} type="date" />,
+      content: <AscendingDescendingFilter data={entries} onFilterChanged={onFilterChanged} {...props} type="date" />,
     },
   };
 

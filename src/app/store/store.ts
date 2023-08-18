@@ -1,12 +1,15 @@
 import { PreloadedState, combineReducers, configureStore } from "@reduxjs/toolkit";
 import entryReducer from './slices/spendingsSlice';
 import settingsReducer from "./slices/settingsSlice";
+import overviewReducer from "./slices/overviewSlice";
+
 
 
 // Create the root reducer separately so we can extract the RootState type
 const rootReducer = combineReducers({
   spending: entryReducer,
   settings: settingsReducer,
+  overview: overviewReducer
 })
 
 

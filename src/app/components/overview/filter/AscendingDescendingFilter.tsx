@@ -27,8 +27,8 @@ const AscendingDescendingFilter = (props: Props) =>{
         filterData(isAscending);
     },[isAscending]);
 
-    const filterData = (isAcending: boolean) => {
-        if(isAscending){
+    const filterData = (isAsc: boolean) => {
+        if(isAsc){
             onAscendingFilterChange();
         }else{
             onDescendingFilterChange();
@@ -50,10 +50,10 @@ const AscendingDescendingFilter = (props: Props) =>{
         
         const getData = ()=> {
             if(props.type=="value"){
-                return props.data.sort((a,b)=> a.value - b.value);
+                return [...props.data].sort((a,b)=> a.value - b.value);
             }
             else{
-                return props.data.sort((a,b)=> a.date - b.date);
+                return  [...props.data].sort((a,b)=> a.date - b.date);
             }
         };
         
@@ -64,10 +64,10 @@ const AscendingDescendingFilter = (props: Props) =>{
        
         const getData = ()=> {
             if(props.type=="value"){
-                return props.data.sort((a,b)=> b.value - a.value);
+                return  [...props.data].sort((a,b)=> b.value - a.value);
             }
             else{
-                return props.data.sort((a,b)=> b.date - a.date);
+                return  [...props.data].sort((a,b)=> b.date - a.date);
             }
         };
 

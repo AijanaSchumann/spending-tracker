@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import {FlatList, Pressable, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {Entry} from '../models/entry';
 import {RootState} from '../store/store';
 import Filter from '../components/overview/filter/FilterContainer';
@@ -34,12 +34,10 @@ const styles = StyleSheet.create({
 });
 
 const Overview: FC = ({navigation}: any) => {
-  const entries = useSelector((state: RootState) => state.spending.entries);
+ 
+  const filteredData = useSelector((state: RootState)=> state.overview.filter.data);
   const currency = useSelector((state: RootState)=> state.settings.currency).symbol;
 
-  const data = [...entries];
-
-  const [filteredData, setFilteredData] = React.useState<(Entry)[]>([]);
   const [isModalVisible, showModal] = React.useState(false);
   const [editEntry, setEditEntry] = useState<Entry | null>(null);
 
@@ -92,7 +90,7 @@ const Overview: FC = ({navigation}: any) => {
   return (
     <SafeAreaView>
       <View style={{backgroundColor: 'lightgrey'}}>
-        <Filter data={data} onFilterChanged={e => setFilteredData(e)} />
+        <Filter />
       </View>
       <View style={{height: '93%'}}>
         {filteredData.length > 0 ? (

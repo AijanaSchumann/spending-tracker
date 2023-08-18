@@ -15,8 +15,7 @@ import FilterSelector from './FilterSelector';
 import {FilterTypes, getSupportedFilter} from '../../../models/filterTypes';
 
 type Props = {
-  data: (Entry)[];
-  onFilterChanged(data: (Entry)[]): void;
+ 
 };
 
 const styles = StyleSheet.create({
