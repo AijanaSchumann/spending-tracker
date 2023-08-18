@@ -89,10 +89,10 @@ const Overview: FC = ({navigation}: any) => {
 
   return (
     <SafeAreaView>
-      <View style={{backgroundColor: 'lightgrey'}}>
+      <View style={{backgroundColor: 'lightgrey', height: "6%"}}>
         <Filter />
       </View>
-      <View style={{height: '93%'}}>
+      <View style={{height: '94%'}}>
         {filteredData.length > 0 ? (
           <FlatList
             data={filteredData}
