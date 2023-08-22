@@ -65,7 +65,7 @@ const DataEntryForm = (props: Props) =>{
             const newEntry: Entry = {
               note: note,
               value: Number(input),
-              date: new Date().getTime(),
+              date: date.getTime(),
               categoryId: categoryId,
               interval: isRecurring ? interval : null,
               type: "income"

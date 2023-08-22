@@ -101,7 +101,7 @@ export class DbService {
 
       const sql =
         `INSERT INTO '${this.entryTableName}' (categoryId, value, note, date, interval, type) values ` +
-        `(${data.categoryId}, ${data.value}, '${data.note || null}', datetime('now'), ${interval}, '${data.type}');`;
+        `(${data.categoryId}, ${data.value}, '${data.note}', ${data.date}, ${interval}, '${data.type}');`;
 
       const result = await this.db?.executeSql(sql);
       return result![0].insertId;
@@ -118,11 +118,10 @@ export class DbService {
   };
 
   async updateEntry(data: Entry){
-   
     try {
       const sql =
         `INSERT OR REPLACE INTO '${this.entryTableName}' (id, categoryId, value, note, date, interval) values ` +
-        `(${data.id!}, ${data.categoryId}, ${data.value}, '${data.note || null}', datetime('now'),'${data.interval}');`;
+        `(${data.id!}, ${data.categoryId}, ${data.value}, '${data.note}', ${data.date},'${data.interval}');`;
 
       const result = await this.db?.executeSql(sql);
       return result![0].insertId;
@@ -235,7 +234,8 @@ export class DbService {
      note TEXT,
      icon TEXT,
      color TEXT,
-     background TEXT
+     background TEXT,
+     radius INTEGER
      );`;
      await this.db?.executeSql(sql);
   }
