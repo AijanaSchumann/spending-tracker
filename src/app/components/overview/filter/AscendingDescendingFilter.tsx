@@ -25,7 +25,7 @@ const AscendingDescendingFilter = (props: Props) =>{
 
     useEffect(()=>{
         filterData(isAscending);
-    },[isAscending]);
+    },[isAscending, props.data]);
 
     const filterData = (isAsc: boolean) => {
         if(isAsc){

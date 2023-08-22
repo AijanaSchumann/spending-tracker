@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     paddingHorizontal: 10,
     paddingVertical: 10,
+    shadowRadius:7,
+    shadowColor:"navy",
+    shadowOpacity:0.6
   },
   title: {
     fontSize: 18,
@@ -33,13 +36,10 @@ const FAB: FC<Props> = (props: Props) => {
   const colorCSS = { backgroundColor: props.color ? props.color : defaultColor};
   const positionCSS : any = props.center ? {alignSelf: "center", bottom: 30} : absolutePosition;
 
-
-
   return (
     <Pressable onPress={props.onPress} style={[styles.container, colorCSS, positionCSS ]}>
       <FontAwesomeIcon size={30} style={{height: '40px'}} icon={props.icon} />
     </Pressable>
-
   );
 };
 

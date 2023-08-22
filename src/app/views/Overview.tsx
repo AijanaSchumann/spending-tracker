@@ -89,7 +89,7 @@ const Overview: FC = ({navigation}: any) => {
 
   return (
     <SafeAreaView>
-      <View style={{backgroundColor: 'lightgrey', height: "6%"}}>
+      <View style={{backgroundColor: 'lightgrey', height: 40}}>
         <Filter />
       </View>
       <View style={{height: '94%'}}>

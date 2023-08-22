@@ -29,8 +29,6 @@ const FilterSelector = (props: Props) => {
 
   useEffect(() => {
     const activeFilter = AllFilters[props.activeFilter];
-    console.log("filter prop: "+props.activeFilter);
-    console.log(activeFilter);
 
     if (activeFilter.filteredData) {
       const data = activeFilter.filteredData();
@@ -74,12 +72,10 @@ const onFilterChanged = (data: (Entry)[]) => {
     );
   };
 
- 
-
   const IncomeFilter = () => {
     return (
       <View style={{flexDirection:"row"}}>
-        <Text style={styles.text}>Showing all...</Text>
+        <Text style={styles.text}>Only</Text>
         <Text style={[styles.text, {color: "green"}]}>Income</Text>
       </View>
     );

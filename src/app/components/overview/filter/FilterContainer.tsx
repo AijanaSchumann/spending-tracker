@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {Entry} from '../../../models/entry';
 import FilterSelector from './FilterSelector';
 import {FilterTypes, getSupportedFilter} from '../../../models/filterTypes';
 
@@ -63,7 +62,7 @@ const Filter: FC<Props> = (props: Props) => {
     },
     {
       id: 6,
-      label: 'Sort by date',
+      label: 'Sort by Date',
       value: "ascDescDate"
     },
   ];
@@ -71,14 +70,14 @@ const Filter: FC<Props> = (props: Props) => {
   return (
     <View style={{backgroundColor: 'lightgray', display: 'flex'}}>
       <View style={{flexDirection: 'row', width: '100%'}}>
-        <View style={{flex: 1}}>
+        <View style={{flexGrow: 1, alignItems: "center"}}>
           <FilterSelector
             activeFilter={getSupportedFilter(selectedFilter)}
             onActiveFilterChange={e => setSelectedFilter(e)}
             {...props}
           />
         </View>
-        <View style={{alignSelf: 'center', marginRight: 5}}>
+        <View style={{ marginRight: 5, marginTop: 10}}>
           <Pressable onPress={e => showFilterList(true)}>
             <FontAwesomeIcon size={23} icon={faFilter} />
           </Pressable>

@@ -13,7 +13,7 @@ const TimeFilter = (props: Props) => {
   const iconSize = 23;
 
   return (
-    <View style={{alignItems: 'center', padding: 5}}>
+    <View style={{alignItems: 'center', padding: 5, marginLeft: 30}}>
       <View style={{flexDirection: 'row'}}>
         <View style={styles.button}>
           <Pressable onPress={e => props.onBack()}>

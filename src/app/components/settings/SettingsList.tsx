@@ -32,9 +32,11 @@ const styles = StyleSheet.create({
     justifyContent:"space-between"
   },
   settingsTitle: {
+    padding: 5,
     fontSize: 20,
     marginTop:5,
-    marginBottom:5
+    marginBottom:5,
+    marginLeft: 10
   },
 });
 
@@ -62,9 +64,9 @@ const SettingsList = () => {
             setSetting(el.element);
             setTitle(el.title);
           }}>
-            <View style={styles.settingsListItem}>
+            <View key={el.title} style={styles.settingsListItem}>
               <Text style={styles.settingsTitle}>{el.title}</Text>
-              <Text style={{alignSelf:"center"}}>{el.selected}</Text>
+              <Text style={{alignSelf:"center", marginRight:10}}>{el.selected}</Text>
           </View>
         </Pressable>
       ))}
