@@ -6,13 +6,12 @@ import SearchBar from '../SearchBar';
 
 type Props = {
   isVisible: boolean; 
-  onClose(selectedIcon: string | null): void;
+  onSelectionChanged(selectedIcon: string | null): void;
   selectedIcon: string | null
 };
 
 const IconPicker = (props: Props) => {
 
-  const [selectedIcon, setSelectedIcon] = useState(props.selectedIcon || '');
   const [filteredList, setFilteredList] = useState(icons);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -23,25 +22,16 @@ const IconPicker = (props: Props) => {
     setFilteredList(searchResult);
   }, [searchTerm]);
 
+  const {selectedIcon, onSelectionChanged}  = props;
+
   return (
     <>
-      <ReactNativeModal
-        isVisible={props.isVisible}
-        animationIn={'fadeIn'}
-        animationOut={'fadeOut'}
-        propagateSwipe
-        onBackdropPress={() => props.onClose(selectedIcon)}>
-        <View style={{backgroundColor: 'white', padding: 10, height: '40%'}}>
+        <View style={{backgroundColor: 'white', padding: 10}}>
           <View style={{display: 'flex', flexDirection: 'row'}}>
             <SearchBar
-              style={{flexBasis: '80%'}}
+              style={{flexBasis: '90%'}}
               value={searchTerm}
               onValueChange={setSearchTerm}
-            />
-            <Button
-              color="black"
-              title="Cancel"
-              onPress={() => props.onClose(null)}
             />
           </View>
 
@@ -54,7 +44,7 @@ const IconPicker = (props: Props) => {
 
                 if (el === selectedIcon) {
                   return (
-                    <Pressable onPress={() => setSelectedIcon(el)}>
+                    <Pressable onPress={() => onSelectionChanged(el)}>
                       <View
                         style={{
                           padding: 5,
@@ -67,7 +57,7 @@ const IconPicker = (props: Props) => {
                   );
                 } else
                   return (
-                    <Pressable onPress={() => setSelectedIcon(el)}>
+                    <Pressable onPress={() => onSelectionChanged(el)}>
                       <View style={{padding: 5, margin: 6}}>
                         <FontAwesomeIcon size={32} icon={['fas', el as any]} />
                       </View>
@@ -77,7 +67,6 @@ const IconPicker = (props: Props) => {
             }}
           />
         </View>
-      </ReactNativeModal>
     </>
   );
 };
