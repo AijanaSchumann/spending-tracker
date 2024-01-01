@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Dispatcher, RootState} from '../../store/store';
 import {saveSetting} from '../../store/slices/settingsSlice';
 import SearchBar from '../general/SearchBar';
+import SettingsScreen from './SettingsScreen';
 
 const styles = StyleSheet.create({
   label: {
@@ -90,7 +91,7 @@ const CurrencyList = () => {
   };
 
   return (
-    <View style={{padding: 5, marginTop: 10}}>
+    <SettingsScreen>
       <SearchBar value={searchTerm}
           onValueChange={setSearchTerm} /> 
       <FlatList
@@ -112,7 +113,7 @@ const CurrencyList = () => {
           }
         }}
       />
-    </View>
+    </SettingsScreen>
   );
 };
 

@@ -18,6 +18,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGear, faHome, faList } from '@fortawesome/free-solid-svg-icons';
 import { setupCategoryIcons } from './constants/iconSetup';
 import { setAppFirstRun } from './store/slices/settingsSlice';
+import CategoryList from './components/settings/CategoryList';
+import CurrencyList from './components/settings/CurrencyList';
 
 
 const App = () => {
@@ -61,29 +63,38 @@ useEffect(() => {
   
 }, [isAppFirstRun]);
 
+const SettingsScreens = () =>{
+  return (
+  <Stack.Navigator initialRouteName='List'>
+    <Stack.Screen name="List" component={Settings} options={{title: "Settings"}}/>
+    <Stack.Screen name="Categories" component={CategoryList} />
+    <Stack.Screen name="Currency" component={CurrencyList}  />
+  </Stack.Navigator>)
+}
+
 const MainTabs = () =>{
 
-  return <Tab.Navigator>
-    <Tab.Screen  name="Home_Tab" component={Home} options={{title:"Home", tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faHome} />)}}  />
+  return( 
+  <Tab.Navigator>
+    <Tab.Screen name="Home_Tab" component={Home} options={{title:"Home", tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faHome} />)}}  />
     <Tab.Screen name="Spendings" component={Overview} options={{tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faList} />)}}  />
-    <Tab.Screen name="Settings" component={Settings} options={{ tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faGear} />)}} />
-  </Tab.Navigator>
+    <Tab.Screen name="Settings" component={SettingsScreens} options={{headerShown: false, tabBarIcon:({ color, size }) => (<FontAwesomeIcon color={color} size={size} icon={faGear} />)}} />
+  </Tab.Navigator>)
 }
   
   return (
-      <SafeAreaProvider>
-{
-initialScreen !== null ?
-<NavigationContainer>
-<Stack.Navigator initialRouteName={initialScreen}>
-  <Stack.Screen name="Home" component={MainTabs} options={{ headerShown: false }} />
-  <Stack.Screen name="Setup" component={Setup} />
-</Stack.Navigator>
-</NavigationContainer>
-:
-<Text>App loading...</Text>
-
-}
+    <SafeAreaProvider style={{flex: 1}}>
+    {
+      initialScreen !== null ?
+      <NavigationContainer>
+      <Stack.Navigator initialRouteName={initialScreen}>
+        <Stack.Screen name="Home" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="Setup" component={Setup} />
+      </Stack.Navigator>
+      </NavigationContainer>
+      :
+      <Text>App loading...</Text>
+    }
       </SafeAreaProvider>
   );
 };

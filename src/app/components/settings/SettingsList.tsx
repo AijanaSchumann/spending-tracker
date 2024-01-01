@@ -1,11 +1,7 @@
-import {useState} from 'react';
-import { Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import CurrencyList from './CurrencyList';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
+import { Pressable, StyleSheet, Text, View} from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import CategoryList from './CategoryList';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -40,19 +36,17 @@ const styles = StyleSheet.create({
   },
 });
 
-type AvailableSettings = { title: string, element: JSX.Element, selected: string}
+type AvailableSettings = { title: string, selected: string, goal: string}
 
 const SettingsList = () => {
 
   const settings = useSelector((state: RootState)=> state.settings);  
 
-  const [isModalVisible, setshowModal] = useState(false);
-  const [setting, setSetting] = useState<JSX.Element | null>(null);
-  const [modalTitle, setTitle] = useState('');
+  const navigation = useNavigation();
 
   const settingsList : AvailableSettings[] = 
-    [   {title: 'Categories', element: <CategoryList />, selected:''},
-        {title: 'Currency', element: <CurrencyList />, selected: `(${settings.currency.name})`},                 
+    [   {title: 'Categories', selected:'', goal: "Categories"},
+        {title: 'Currency', selected: `(${settings.currency.name})`, goal: "Currency"},                 
     ];
 
   return (
@@ -60,9 +54,7 @@ const SettingsList = () => {
       {settingsList.map(el => (
         <Pressable 
           onPress={() => {
-            setshowModal(true);
-            setSetting(el.element);
-            setTitle(el.title);
+            navigation.navigate(el.goal  as never)
           }}>
             <View key={el.title} style={styles.settingsListItem}>
               <Text style={styles.settingsTitle}>{el.title}</Text>
@@ -70,24 +62,6 @@ const SettingsList = () => {
           </View>
         </Pressable>
       ))}
-
-      <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        onRequestClose={e => setshowModal(false)}
-        presentationStyle="fullScreen">
-        <View style={styles.modalBackground}>
-          <View style={styles.titleContainer}>
-            <View>
-              <Pressable onPress={() => setshowModal(false)}>
-                <FontAwesomeIcon size={23} icon={faXmark} />
-              </Pressable>
-            </View>
-            <Text style={styles.title}>{modalTitle}</Text>
-          </View>
-          {setting}
-        </View>
-      </Modal>
     </View>
   );
 };

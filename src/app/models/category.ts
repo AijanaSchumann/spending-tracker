@@ -6,6 +6,7 @@ export interface Category{
     type: "expense" | "income",
     icon: string | null,
     color: string | null,
-    background: string | null
+    background: string | null,
+    radius?: number 
 
 }

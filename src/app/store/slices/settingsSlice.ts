@@ -9,7 +9,9 @@ import { deleteCategory, saveCategory, saveShowCategoryIcons, updateCategory } f
 type CategoryState = {
     income: Category[],
     expense: Category[],
-    showIcons: boolean
+    showIcons: boolean,
+    selectedCategory: Category | null
+    
 }
 
 export interface SettingsState {
@@ -24,7 +26,8 @@ const initialState: SettingsState = {
     categories: {
         income: [],
         expense: [],
-        showIcons: false
+        showIcons: false,
+        selectedCategory: null
     }
 }
 
@@ -34,6 +37,9 @@ export const settingsSlice = createSlice({
   reducers:{
     setAppFirstRun: (state, action: PayloadAction<boolean>) =>{
         state.appFirstRun = action.payload;
+    },
+    selectCategory: (state, action: PayloadAction<Category | null>) =>{
+        state.categories.selectedCategory = action.payload
     }
   },
   extraReducers(builder){
@@ -46,8 +52,10 @@ export const settingsSlice = createSlice({
            state[(prop as SupportedSettings)] = otherSettings[prop];
     }
 
+    //move this one into loadData action!
     state.categories.expense = payload.categories.expense;
     state.categories.income = payload.categories.income;
+    state.categories.selectedCategory = null;
 
    }),
    builder.addCase(saveSetting.fulfilled, (state, action)=>{
@@ -62,6 +70,7 @@ export const settingsSlice = createSlice({
     const data = action.payload;
     if(data){
         state.categories[data.type] = state.categories[data.type].concat(data);
+        state.categories.selectedCategory = null;
     }
   }),
   builder.addCase(updateCategory.fulfilled, (state, action)=>{
@@ -74,6 +83,7 @@ export const settingsSlice = createSlice({
         }else{
             state.categories[data.type] = state.categories[data.type].map(el => el.id == data.id ? data : el);
         }
+        state.categories.selectedCategory = null;
     }
   }),
   builder.addCase(deleteCategory.fulfilled, (state, action)=>{
@@ -101,7 +111,7 @@ export const updateSetting = createAsyncThunk("settings/updateSetting", async (d
     return { settingsName: data.settingsName, value: data.value };
 });
 
-export const { setAppFirstRun } = settingsSlice.actions;
+export const { setAppFirstRun, selectCategory  } = settingsSlice.actions;
 
 
 export default settingsSlice.reducer;

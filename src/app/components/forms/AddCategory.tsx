@@ -1,8 +1,7 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {
   Button,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -20,16 +19,13 @@ import {Dispatcher, RootState} from '../../store/store';
 import {Category} from '../../models/category';
 import { deleteCategory, saveCategory, updateCategory } from '../../store/actions/SettingsActions';
 import { Slider } from '@miblanchard/react-native-slider';
+import SettingsScreen from '../settings/SettingsScreen';
 
-type Props = {
-  onClose(): void
-  category: Category | null
-}
 
-const AddCategoryModal = (props: Props) => {
+const AddCategoryModal : FC = ({navigation}: any) => {
 
   const dispatch = useDispatch<Dispatcher>();
-  const editElement = props.category;
+  const editElement = useSelector((state: RootState) => state.settings.categories.selectedCategory);
   const categories = useSelector((state: RootState) => state.settings.categories);
 
   const [value, setValue] = useState(editElement?.title || '');
@@ -44,6 +40,8 @@ const AddCategoryModal = (props: Props) => {
 
   const timeout = useRef<undefined | ReturnType<typeof setTimeout>>(undefined);
 
+  
+
   //TODO: save radius to db!
 
   useEffect(() => {
@@ -52,6 +50,11 @@ const AddCategoryModal = (props: Props) => {
       clearTimeout(timeout.current);
     };
   }, []);
+
+  useEffect(()=>{
+    if(editElement)
+      navigation.setOptions({ title: 'Update Category' });
+  }, [editElement]);
 
 
   const isInEditMode = editElement !== null;
@@ -88,7 +91,7 @@ const AddCategoryModal = (props: Props) => {
         background: selectedBackgroundColor,
       };
       dispatch(saveCategory(newCategory));
-      props.onClose();
+      navigation.goBack();
     }
   };
 
@@ -109,13 +112,13 @@ const AddCategoryModal = (props: Props) => {
         background: selectedBackgroundColor,
       };
       dispatch(updateCategory({data: newCategory, switchType: updateType}));
-      props.onClose();
+      navigation.goBack();
     }
   };
 
   const onDelete = () => {
     dispatch(deleteCategory(editElement!));
-    props.onClose();
+    navigation.goBack();
   };
 
   const checkForDuplicateCategories = (newValue: string) => {
@@ -133,20 +136,8 @@ const AddCategoryModal = (props: Props) => {
   const iconbgRadius = isNaN(Number(borderRadius)) ? 25 : Number(borderRadius);
 
   return (
-    <Modal
-      animationType="slide"
-      onRequestClose={e => props.onClose()}
-      presentationStyle="pageSheet"
-      visible>
-      <View style={{padding: 20, display: 'flex', height: '86%'}}>
-        <View style={{flexDirection: 'row'}}>
-          <FontAwesomeIcon
-            style={{alignSelf: 'flex-start'}}
-            size={20}
-            icon={faXmark}
-          />
-          <Text style={styles.header}></Text>
-        </View>
+    <SettingsScreen>
+      <View style={{padding: 10, display: 'flex'}}>
         <View style={{alignItems: 'center'}}>
           <TextInput
             value={value}
@@ -242,7 +233,7 @@ const AddCategoryModal = (props: Props) => {
           onAction={onSave}
         />
       )}
-    </Modal>
+    </SettingsScreen>
   );
 };
 
