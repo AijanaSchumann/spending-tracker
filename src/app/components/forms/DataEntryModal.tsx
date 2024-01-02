@@ -1,6 +1,6 @@
 import {faDollarSign, faShoppingCart, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import ExpenseIncomeSwitch from '../general/ExpenseIncomeSwitch';
 import { Entry } from '../../models/entry';
@@ -34,9 +34,17 @@ const DataEntryModal = (props: Props) => {
 
   const dispatch = useDispatch<Dispatcher>();
 
-  const categories = useSelector((state: RootState)=> state.settings.categories);
+  const categories = useSelector((state: RootState)=> state.settings.categories.data);
 
   const [type, setType] = useState<'expense' | 'income'>(props.editElement?.type || 'expense');
+  const [filteredCategories, setFilteredCategories] = useState(categories);
+
+  useEffect(()=>{
+
+    const filtered = categories.filter(el => el.type === type);
+    setFilteredCategories(filtered);
+
+  }, [categories, type]);
 
   const action = props.editElement ? "Update" : "New";
 
@@ -78,7 +86,7 @@ const onDelete = () =>{
         </View>
        
         <ExpenseIncomeSwitch value={type} onValueChange={setType} />
-        <DataEntryForm data={props.editElement} categories={categories[type]} onSave={saveEntry} onUpdate={updateEntry} onDelete={onDelete} />
+        <DataEntryForm data={props.editElement} categories={filteredCategories} onSave={saveEntry} onUpdate={updateEntry} onDelete={onDelete} />
       </View>
     </Modal>
   );

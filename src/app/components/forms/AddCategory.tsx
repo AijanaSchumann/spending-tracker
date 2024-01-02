@@ -26,7 +26,7 @@ const AddCategoryModal : FC = ({navigation}: any) => {
 
   const dispatch = useDispatch<Dispatcher>();
   const editElement = useSelector((state: RootState) => state.settings.categories.selectedCategory);
-  const categories = useSelector((state: RootState) => state.settings.categories);
+  const categories = useSelector((state: RootState) => state.settings.categories.data);
 
   const [value, setValue] = useState(editElement?.title || '');
   const [selectedIcon, setSelectedIcon] = useState(editElement?.icon || '');
@@ -101,8 +101,6 @@ const AddCategoryModal : FC = ({navigation}: any) => {
     } else {
       setError(false);
 
-      const updateType = editElement?.type !== type;
-
       const newCategory: Category = {
         id: editElement?.id!,
         title: value,
@@ -111,7 +109,7 @@ const AddCategoryModal : FC = ({navigation}: any) => {
         color: selectedColor,
         background: selectedBackgroundColor,
       };
-      dispatch(updateCategory({data: newCategory, switchType: updateType}));
+      dispatch(updateCategory({data: newCategory}));
       navigation.goBack();
     }
   };
@@ -124,10 +122,9 @@ const AddCategoryModal : FC = ({navigation}: any) => {
   const checkForDuplicateCategories = (newValue: string) => {
     setInfoMessage('');
     clearTimeout(timeout.current);
-    const allCategories = [...categories.expense, ...categories.income];
-
+ 
     timeout.current = setTimeout(() => {
-      if (!!allCategories.find(el => el.title == newValue)) {
+      if (!!categories.find(el => el.title == newValue)) {
         setInfoMessage('Category with the same name exists.');
       }
     }, 1000);

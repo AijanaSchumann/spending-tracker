@@ -17,17 +17,15 @@ import { saveShowCategoryIcons } from '../../store/actions/SettingsActions';
 import SettingsScreen from './SettingsScreen';
 import { selectCategory } from '../../store/slices/settingsSlice';
 import { useNavigation } from '@react-navigation/native';
+import { selectCategoriesGroupedByType } from '../../store/selectors';
 
 const CategoryList = () => {
   
-  const categories = useSelector((state: RootState) => state.settings.categories);
+  const categories = useSelector(selectCategoriesGroupedByType);
   const showIcons = useSelector((state: RootState)=> state.settings.categories.showIcons);
 
   const navigation = useNavigation();
   const dispatcher = useDispatch<Dispatcher>();
-
-  const [category, setEditCategory] = useState<Category | null>(null);
-  const [isModalVisible, setVisible] = useState(false);
 
   const onCreateCategory = () =>{
     dispatcher(selectCategory(null));

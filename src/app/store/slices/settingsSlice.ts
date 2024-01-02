@@ -7,8 +7,7 @@ import { Category } from "../../models/category";
 import { deleteCategory, saveCategory, saveShowCategoryIcons, updateCategory } from "../actions/SettingsActions";
 
 type CategoryState = {
-    income: Category[],
-    expense: Category[],
+    data: Category[],
     showIcons: boolean,
     selectedCategory: Category | null
     
@@ -24,8 +23,7 @@ const initialState: SettingsState = {
     currency: currencyList[0],
     appFirstRun: null,
     categories: {
-        income: [],
-        expense: [],
+        data: [],
         showIcons: false,
         selectedCategory: null
     }
@@ -53,8 +51,7 @@ export const settingsSlice = createSlice({
     }
 
     //move this one into loadData action!
-    state.categories.expense = payload.categories.expense;
-    state.categories.income = payload.categories.income;
+    state.categories.data = payload.categories;
     state.categories.selectedCategory = null;
 
    }),
@@ -63,13 +60,12 @@ export const settingsSlice = createSlice({
     state[payload.settingsName] = payload.value
    }),
    builder.addCase(createInitialCategories.fulfilled, (state, action)=>{
-    state.categories.expense = action.payload.expense;
-    state.categories.income = action.payload.income;
+    state.categories.data = action.payload;
    }),
    builder.addCase(saveCategory.fulfilled, (state, action)=>{
     const data = action.payload;
     if(data){
-        state.categories[data.type] = state.categories[data.type].concat(data);
+        state.categories.data = state.categories.data.concat(data);
         state.categories.selectedCategory = null;
     }
   }),
@@ -77,19 +73,15 @@ export const settingsSlice = createSlice({
 
     const data = action.payload?.data;
     if(data){
-        if(action.payload?.switchType){
-            state.categories[data.type] = state.categories[data.type].concat(data);
-            state.categories[data.type === "expense" ? "income": "expense"] = state.categories[data.type === "expense" ? "income": "expense"].filter(el => el.id != data.id);
-        }else{
-            state.categories[data.type] = state.categories[data.type].map(el => el.id == data.id ? data : el);
+
+            state.categories.data = state.categories.data.map(el => el.id == data.id ? data : el);
         }
         state.categories.selectedCategory = null;
-    }
   }),
   builder.addCase(deleteCategory.fulfilled, (state, action)=>{
     const data = action.payload;
     if(data)
-      state.categories[data.type] = state.categories[data.type].filter(el => el.id != data.id);
+      state.categories.data = state.categories.data.filter(el => el.id != data.id);
   }),
   builder.addCase(saveShowCategoryIcons.fulfilled, (state, action)=>{
     state.categories.showIcons = action.payload;

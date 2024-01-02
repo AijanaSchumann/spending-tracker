@@ -21,6 +21,7 @@ import MoneyTextInput from '../../../components/general/MoneyTextInput';
 import { intervalList } from '../../../constants/intervalList';
 import { useNavigation } from '@react-navigation/native';
 import { saveAllIncome } from '../../../store/slices/spendingsSlice';
+import { selectCategoriesGroupedByType } from '../../../store/selectors';
 
 const styles = StyleSheet.create({
   container: {paddingLeft: 20, paddingRight: 20, marginBottom: 35},
@@ -52,7 +53,7 @@ const SetupIncome = (props: Props) => {
   };
 
   const dispatch = useDispatch<Dispatcher>();
-  const categories = useSelector((state: RootState)=> state.settings.categories.income);
+  const categories = useSelector(selectCategoriesGroupedByType).income;
 
   const [income, setIncome] = React.useState<string>("");
   const [interval, setInterval] = React.useState('monthly');

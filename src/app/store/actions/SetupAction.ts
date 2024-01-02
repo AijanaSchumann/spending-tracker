@@ -6,10 +6,7 @@ import defaultDataService from "../../services/defaultDataService";
 
 export const createInitialCategories = createAsyncThunk('setup/create-categories', async (thunkAPI)=>{
 
-    const result = await defaultDataService.createDefaultCategories();
-    const groupedCategories = groupBy(result, i => i.type);
-    return groupedCategories;
-
+    return await defaultDataService.createDefaultCategories();
 });
 
 export const loadDataOnStartup = createAsyncThunk('startup/loadData', async (thunkAPI)=>{
@@ -17,7 +14,6 @@ export const loadDataOnStartup = createAsyncThunk('startup/loadData', async (thu
     const entries = await databaseService.loadEntries();
     const categories = await databaseService.loadCategories();
     const settings = await databaseService.loadSettings();
-    const groupedCategories = groupBy(categories, i => i.type);
-    return {categories: groupedCategories, data: entries, settings: settings};
+    return {categories: categories, data: entries, settings: settings};
 
 });
